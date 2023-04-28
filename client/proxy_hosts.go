@@ -67,5 +67,9 @@ func (c *Client) GetProxyHost(id *int64) (*ProxyHostResponse, error) {
 		return nil, err
 	}
 
+	if ar.ID == 0 {
+		return nil, fmt.Errorf("proxy host with id %d not found", *id)
+	}
+
 	return &ar, nil
 }
