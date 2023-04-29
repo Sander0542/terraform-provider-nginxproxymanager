@@ -74,24 +74,28 @@ func (r *proxyHostResource) Metadata(_ context.Context, req resource.MetadataReq
 
 func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Proxy Host data source",
+		Description: "Manage a proxy host.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Computed: true,
+				Description: "The ID of the proxy host.",
+				Computed:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"created_on": schema.StringAttribute{
-				Computed: true,
+				Description: "The date and time the proxy host was created.",
+				Computed:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"modified_on": schema.StringAttribute{
-				Computed: true,
+				Description: "The date and time the proxy host was last modified.",
+				Computed:    true,
 			},
 			"domain_names": schema.ListAttribute{
+				Description: "The domain names associated with the proxy host.",
 				Required:    true,
 				ElementType: types.StringType,
 				Validators: []validator.List{
@@ -99,77 +103,92 @@ func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				},
 			},
 			"forward_scheme": schema.StringAttribute{
-				Required: true,
+				Description: "The scheme used to forward requests to the proxy host. Can be either `http` or `https`.",
+				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("http", "https"),
 				},
 			},
 			"forward_host": schema.StringAttribute{
-				Required: true,
+				Description: "The host used to forward requests to the proxy host.",
+				Required:    true,
 			},
 			"forward_port": schema.Int64Attribute{
-				Required: true,
+				Description: "The port used to forward requests to the proxy host. Must be between 1 and 65535.",
+				Required:    true,
 				Validators: []validator.Int64{
 					int64validator.Between(1, 65535),
 				},
 			},
 			"certificate_id": schema.StringAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  stringdefault.StaticString("0"),
+				Description: "The ID of the certificate used by the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     stringdefault.StaticString("0"),
 			},
 			"ssl_forced": schema.BoolAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  booldefault.StaticBool(false),
+				Description: "Whether SSL is forced for the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"hsts_enabled": schema.BoolAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  booldefault.StaticBool(false),
+				Description: "Whether HSTS is enabled for the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"hsts_subdomains": schema.BoolAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  booldefault.StaticBool(false),
+				Description: "Whether HSTS is enabled for subdomains of the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"http2_support": schema.BoolAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  booldefault.StaticBool(false),
+				Description: "Whether HTTP/2 is supported for the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"block_exploits": schema.BoolAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  booldefault.StaticBool(false),
+				Description: "Whether exploits are blocked for the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"caching_enabled": schema.BoolAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  booldefault.StaticBool(false),
+				Description: "Whether caching is enabled for the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"allow_websocket_upgrade": schema.BoolAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  booldefault.StaticBool(true),
+				Description: "Whether websocket upgrades are allowed for the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     booldefault.StaticBool(true),
 			},
 			"access_list_id": schema.Int64Attribute{
-				Computed: true,
-				Optional: true,
-				Default:  int64default.StaticInt64(0),
+				Description: "The ID of the access list used by the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     int64default.StaticInt64(0),
 			},
 			"advanced_config": schema.StringAttribute{
-				Computed: true,
-				Optional: true,
-				Default:  stringdefault.StaticString(""),
+				Description: "The advanced configuration used by the proxy host.",
+				Computed:    true,
+				Optional:    true,
+				Default:     stringdefault.StaticString(""),
 			},
 			"enabled": schema.BoolAttribute{
-				Computed: true,
+				Description: "Whether the proxy host is enabled.",
+				Computed:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"meta": schema.MapAttribute{
+				Description: "The meta data associated with the proxy host.",
 				ElementType: types.StringType,
 				Computed:    true,
 				PlanModifiers: []planmodifier.Map{
@@ -179,29 +198,35 @@ func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 		},
 		Blocks: map[string]schema.Block{
 			"location": schema.ListNestedBlock{
+				Description: "The locations associated with the proxy host.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"path": schema.StringAttribute{
-							Required: true,
+							Description: "The path associated with the location.",
+							Required:    true,
 						},
 						"forward_scheme": schema.StringAttribute{
-							Required: true,
+							Description: "The scheme used to forward requests to the location. Can be either `http` or `https`.",
+							Required:    true,
 							Validators: []validator.String{
 								stringvalidator.OneOf("http", "https"),
 							},
 						},
 						"forward_host": schema.StringAttribute{
-							Required: true,
+							Description: "The host used to forward requests to the location.",
+							Required:    true,
 						},
 						"forward_port": schema.Int64Attribute{
-							Required: true,
+							Description: "The port used to forward requests to the location. Must be between 1 and 65535.",
+							Required:    true,
 							Validators: []validator.Int64{
 								int64validator.Between(1, 65535),
 							},
 						},
 						"advanced_config": schema.StringAttribute{
-							Computed: true,
-							Default:  stringdefault.StaticString(""),
+							Description: "The advanced configuration used by the location.",
+							Computed:    true,
+							Default:     stringdefault.StaticString(""),
 						},
 					},
 				},

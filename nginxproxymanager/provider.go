@@ -37,6 +37,7 @@ func (p *nginxproxymanagerProvider) Metadata(_ context.Context, _ provider.Metad
 
 func (p *nginxproxymanagerProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description: "Interact with Nginx Proxy Manager API.",
 		Attributes: map[string]schema.Attribute{
 			"host": schema.StringAttribute{
 				Description: "URI for Nginx Proxy Manager API. May also be provided via NGINX_PROXY_MANAGER_HOST environment variable.",
