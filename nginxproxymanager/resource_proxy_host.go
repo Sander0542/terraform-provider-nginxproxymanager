@@ -226,6 +226,7 @@ func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						"advanced_config": schema.StringAttribute{
 							Description: "The advanced configuration used by the location.",
 							Computed:    true,
+							Optional:    true,
 							Default:     stringdefault.StaticString(""),
 						},
 					},
