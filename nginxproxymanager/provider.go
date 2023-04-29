@@ -177,5 +177,7 @@ func (p *nginxproxymanagerProvider) DataSources(_ context.Context) []func() data
 }
 
 func (p *nginxproxymanagerProvider) Resources(_ context.Context) []func() resource.Resource {
-	return nil
+	return []func() resource.Resource{
+		NewProxyHostResource,
+	}
 }
