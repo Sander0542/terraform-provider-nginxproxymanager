@@ -23,12 +23,12 @@ type proxyHostsDataSource struct {
 }
 
 type proxyHostsDataSourceModel struct {
-	ProxyHosts []proxyHost `tfsdk:"proxy_hosts"`
+	ProxyHosts []proxyHostItem `tfsdk:"proxy_hosts"`
 }
 
-type proxyHost struct {
+type proxyHostItem struct {
 	ID                    types.Int64  `tfsdk:"id"`
-	CreatedAt             types.String `tfsdk:"created_at"`
+	CreatedOn             types.String `tfsdk:"created_on"`
 	ModifiedOn            types.String `tfsdk:"modified_on"`
 	DomainNames           types.List   `tfsdk:"domain_names"`
 	ForwardScheme         types.String `tfsdk:"forward_scheme"`
@@ -46,6 +46,7 @@ type proxyHost struct {
 	AdvancedConfig        types.String `tfsdk:"advanced_config"`
 	Enabled               types.Bool   `tfsdk:"enabled"`
 	Meta                  types.Map    `tfsdk:"meta"`
+	Locations             types.List   `tfsdk:"locations"`
 }
 
 func (d *proxyHostsDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -63,7 +64,7 @@ func (d *proxyHostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 						"id": schema.Int64Attribute{
 							Computed: true,
 						},
-						"created_at": schema.StringAttribute{
+						"created_on": schema.StringAttribute{
 							Computed: true,
 						},
 						"modified_on": schema.StringAttribute{
@@ -119,6 +120,28 @@ func (d *proxyHostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 							ElementType: types.StringType,
 							Computed:    true,
 						},
+						"locations": schema.ListNestedAttribute{
+							Computed: true,
+							NestedObject: schema.NestedAttributeObject{
+								Attributes: map[string]schema.Attribute{
+									"path": schema.StringAttribute{
+										Computed: true,
+									},
+									"forward_scheme": schema.StringAttribute{
+										Computed: true,
+									},
+									"forward_host": schema.StringAttribute{
+										Computed: true,
+									},
+									"forward_port": schema.Int64Attribute{
+										Computed: true,
+									},
+									"advanced_config": schema.StringAttribute{
+										Computed: true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -152,9 +175,9 @@ func (d *proxyHostsDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		meta, diags := types.MapValueFrom(ctx, types.StringType, value.Meta.Map())
 		resp.Diagnostics.Append(diags...)
 
-		proxyHost := proxyHost{
+		proxyHost := proxyHostItem{
 			ID:                    types.Int64Value(value.ID),
-			CreatedAt:             types.StringValue(value.CreatedAt),
+			CreatedOn:             types.StringValue(value.CreatedOn),
 			ModifiedOn:            types.StringValue(value.ModifiedOn),
 			DomainNames:           domainNames,
 			ForwardScheme:         types.StringValue(value.ForwardScheme),

@@ -2,7 +2,7 @@ package nginxproxymanager
 
 import (
 	"context"
-
+	"fmt"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -24,7 +24,7 @@ type proxyHostDataSource struct {
 
 type proxyHostDataSourceModel struct {
 	ID                    types.Int64  `tfsdk:"id"`
-	CreatedAt             types.String `tfsdk:"created_at"`
+	CreatedOn             types.String `tfsdk:"created_on"`
 	ModifiedOn            types.String `tfsdk:"modified_on"`
 	DomainNames           types.List   `tfsdk:"domain_names"`
 	ForwardScheme         types.String `tfsdk:"forward_scheme"`
@@ -42,6 +42,7 @@ type proxyHostDataSourceModel struct {
 	AdvancedConfig        types.String `tfsdk:"advanced_config"`
 	Enabled               types.Bool   `tfsdk:"enabled"`
 	Meta                  types.Map    `tfsdk:"meta"`
+	Locations             types.List   `tfsdk:"locations"`
 }
 
 func (d *proxyHostDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -55,7 +56,7 @@ func (d *proxyHostDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 			"id": schema.Int64Attribute{
 				Required: true,
 			},
-			"created_at": schema.StringAttribute{
+			"created_on": schema.StringAttribute{
 				Computed: true,
 			},
 			"modified_on": schema.StringAttribute{
@@ -111,6 +112,28 @@ func (d *proxyHostDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				ElementType: types.StringType,
 				Computed:    true,
 			},
+			"locations": schema.ListNestedAttribute{
+				Computed: true,
+				NestedObject: schema.NestedAttributeObject{
+					Attributes: map[string]schema.Attribute{
+						"path": schema.StringAttribute{
+							Computed: true,
+						},
+						"forward_scheme": schema.StringAttribute{
+							Computed: true,
+						},
+						"forward_host": schema.StringAttribute{
+							Computed: true,
+						},
+						"forward_port": schema.Int64Attribute{
+							Computed: true,
+						},
+						"advanced_config": schema.StringAttribute{
+							Computed: true,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -131,8 +154,15 @@ func (d *proxyHostDataSource) Read(ctx context.Context, req datasource.ReadReque
 	proxyHost, err := d.client.GetProxyHost(data.ID.ValueInt64Pointer())
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Read Nginx Proxy Manager Proxy Host",
+			"Could not read proxy host",
 			err.Error(),
+		)
+		return
+	}
+	if proxyHost == nil {
+		resp.Diagnostics.AddError(
+			"Could not read proxy host",
+			fmt.Sprintf("No proxy host found with ID: %d", data.ID),
 		)
 		return
 	}
@@ -143,7 +173,7 @@ func (d *proxyHostDataSource) Read(ctx context.Context, req datasource.ReadReque
 	resp.Diagnostics.Append(diags...)
 
 	data.ID = types.Int64Value(proxyHost.ID)
-	data.CreatedAt = types.StringValue(proxyHost.CreatedAt)
+	data.CreatedOn = types.StringValue(proxyHost.CreatedOn)
 	data.ModifiedOn = types.StringValue(proxyHost.ModifiedOn)
 	data.DomainNames = domainNames
 	data.ForwardScheme = types.StringValue(proxyHost.ForwardScheme)
