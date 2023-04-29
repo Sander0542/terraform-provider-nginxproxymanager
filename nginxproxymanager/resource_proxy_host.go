@@ -2,24 +2,31 @@ package nginxproxymanager
 
 import (
 	"context"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
-
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
 )
 
 var (
-	_ resource.Resource              = &proxyHostResource{}
-	_ resource.ResourceWithConfigure = &proxyHostResource{}
+	_ resource.Resource                   = &proxyHostResource{}
+	_ resource.ResourceWithConfigure      = &proxyHostResource{}
+	_ resource.ResourceWithValidateConfig = &proxyHostResource{}
+	_ resource.ResourceWithImportState    = &proxyHostResource{}
 )
 
 func NewProxyHostResource() resource.Resource {
@@ -87,59 +94,80 @@ func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"domain_names": schema.ListAttribute{
 				Required:    true,
 				ElementType: types.StringType,
+				Validators: []validator.List{
+					listvalidator.SizeAtLeast(1),
+				},
 			},
 			"forward_scheme": schema.StringAttribute{
 				Required: true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("http", "https"),
+				},
 			},
 			"forward_host": schema.StringAttribute{
 				Required: true,
 			},
 			"forward_port": schema.Int64Attribute{
 				Required: true,
+				Validators: []validator.Int64{
+					int64validator.Between(1, 65535),
+				},
 			},
 			"certificate_id": schema.StringAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  stringdefault.StaticString("0"),
 			},
 			"ssl_forced": schema.BoolAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  booldefault.StaticBool(false),
 			},
 			"hsts_enabled": schema.BoolAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  booldefault.StaticBool(false),
 			},
 			"hsts_subdomains": schema.BoolAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  booldefault.StaticBool(false),
 			},
 			"http2_support": schema.BoolAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  booldefault.StaticBool(false),
 			},
 			"block_exploits": schema.BoolAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  booldefault.StaticBool(false),
 			},
 			"caching_enabled": schema.BoolAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  booldefault.StaticBool(false),
 			},
 			"allow_websocket_upgrade": schema.BoolAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  booldefault.StaticBool(true),
 			},
 			"access_list_id": schema.Int64Attribute{
 				Computed: true,
+				Optional: true,
 				Default:  int64default.StaticInt64(0),
 			},
 			"advanced_config": schema.StringAttribute{
 				Computed: true,
+				Optional: true,
 				Default:  stringdefault.StaticString(""),
 			},
 			"enabled": schema.BoolAttribute{
 				Computed: true,
-				Default:  booldefault.StaticBool(true),
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"meta": schema.MapAttribute{
 				ElementType: types.StringType,
@@ -158,12 +186,18 @@ func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						},
 						"forward_scheme": schema.StringAttribute{
 							Required: true,
+							Validators: []validator.String{
+								stringvalidator.OneOf("http", "https"),
+							},
 						},
 						"forward_host": schema.StringAttribute{
 							Required: true,
 						},
 						"forward_port": schema.Int64Attribute{
 							Required: true,
+							Validators: []validator.Int64{
+								int64validator.Between(1, 65535),
+							},
 						},
 						"advanced_config": schema.StringAttribute{
 							Computed: true,
@@ -184,7 +218,6 @@ func (r *proxyHostResource) Configure(_ context.Context, req resource.ConfigureR
 	r.client = req.ProviderData.(*client.Client)
 }
 
-// Create creates the resource and sets the initial Terraform state.
 func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan proxyHostResourceModel
 	diags := req.Plan.Get(ctx, &plan)
@@ -199,7 +232,6 @@ func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	for _, domainName := range plan.DomainNames {
 		item.DomainNames = append(item.DomainNames, domainName.ValueString())
 	}
-
 	item.ForwardScheme = plan.ForwardScheme.ValueString()
 	item.ForwardHost = plan.ForwardHost.ValueString()
 	item.ForwardPort = uint16(plan.ForwardPort.ValueInt64())
@@ -213,7 +245,6 @@ func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	item.AllowWebsocketUpgrade = plan.AllowWebsocketUpgrade.ValueBool()
 	item.AccessListID = plan.AccessListID.ValueInt64()
 	item.AdvancedConfig = plan.AdvancedConfig.ValueString()
-	item.Enabled = plan.Enabled.ValueBool()
 	item.Meta = map[string]string{}
 	item.Locations = []models.ProxyHostLocation{}
 	for _, location := range plan.Locations {
@@ -238,6 +269,7 @@ func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	plan.ID = types.Int64Value(proxyHost.ID)
 	plan.CreatedOn = types.StringValue(proxyHost.CreatedOn)
 	plan.ModifiedOn = types.StringValue(proxyHost.ModifiedOn)
+	plan.Enabled = types.BoolValue(proxyHost.Enabled.Bool())
 	plan.Meta = meta
 
 	diags = resp.State.Set(ctx, plan)
@@ -247,7 +279,6 @@ func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	}
 }
 
-// Read refreshes the Terraform state with the latest data.
 func (r *proxyHostResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state *proxyHostResourceModel
 	diags := req.State.Get(ctx, &state)
@@ -308,10 +339,147 @@ func (r *proxyHostResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 }
 
-// Update updates the resource and sets the updated Terraform state on success.
 func (r *proxyHostResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan proxyHostResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var item models.ProxyHostUpdate
+
+	item.DomainNames = []string{}
+	for _, domainName := range plan.DomainNames {
+		item.DomainNames = append(item.DomainNames, domainName.ValueString())
+	}
+	item.ForwardScheme = plan.ForwardScheme.ValueString()
+	item.ForwardHost = plan.ForwardHost.ValueString()
+	item.ForwardPort = uint16(plan.ForwardPort.ValueInt64())
+	item.CertificateID = plan.CertificateID.ValueString()
+	item.SSLForced = plan.SSLForced.ValueBool()
+	item.HSTSEnabled = plan.HSTSEnabled.ValueBool()
+	item.HSTSSubdomains = plan.HSTSSubdomains.ValueBool()
+	item.HTTP2Support = plan.HTTP2Support.ValueBool()
+	item.BlockExploits = plan.BlockExploits.ValueBool()
+	item.CachingEnabled = plan.CachingEnabled.ValueBool()
+	item.AllowWebsocketUpgrade = plan.AllowWebsocketUpgrade.ValueBool()
+	item.AccessListID = plan.AccessListID.ValueInt64()
+	item.AdvancedConfig = plan.AdvancedConfig.ValueString()
+	item.Meta = map[string]string{}
+	item.Locations = []models.ProxyHostLocation{}
+	for _, location := range plan.Locations {
+		item.Locations = append(item.Locations, models.ProxyHostLocation{
+			Path:           location.Path.ValueString(),
+			ForwardScheme:  location.ForwardScheme.ValueString(),
+			ForwardHost:    location.ForwardHost.ValueString(),
+			ForwardPort:    uint16(location.ForwardPort.ValueInt64()),
+			AdvancedConfig: location.AdvancedConfig.ValueString(),
+		})
+	}
+
+	proxyHost, err := r.client.UpdateProxyHost(plan.ID.ValueInt64Pointer(), &item)
+	if err != nil {
+		resp.Diagnostics.AddError("Error updating proxy host", "Could not update proxy host, unexpected error: "+err.Error())
+		return
+	}
+
+	meta, diags := types.MapValueFrom(ctx, types.StringType, proxyHost.Meta.Map())
+	resp.Diagnostics.Append(diags...)
+
+	plan.ID = types.Int64Value(proxyHost.ID)
+	plan.DomainNames = []types.String{}
+	for _, domainName := range proxyHost.DomainNames {
+		plan.DomainNames = append(plan.DomainNames, types.StringValue(domainName))
+	}
+	plan.Locations = []proxyHostLocationModel{}
+	for _, location := range proxyHost.Locations {
+		plan.Locations = append(plan.Locations, proxyHostLocationModel{
+			Path:           types.StringValue(location.Path),
+			ForwardScheme:  types.StringValue(location.ForwardScheme),
+			ForwardHost:    types.StringValue(location.ForwardHost),
+			ForwardPort:    types.Int64Value(int64(location.ForwardPort)),
+			AdvancedConfig: types.StringValue(location.AdvancedConfig),
+		})
+	}
+	plan.CreatedOn = types.StringValue(proxyHost.CreatedOn)
+	plan.ModifiedOn = types.StringValue(proxyHost.ModifiedOn)
+	plan.ForwardScheme = types.StringValue(proxyHost.ForwardScheme)
+	plan.ForwardHost = types.StringValue(proxyHost.ForwardHost)
+	plan.ForwardPort = types.Int64Value(int64(proxyHost.ForwardPort))
+	plan.CertificateID = types.StringValue(string(proxyHost.CertificateID))
+	plan.SSLForced = types.BoolValue(proxyHost.SSLForced.Bool())
+	plan.HSTSEnabled = types.BoolValue(proxyHost.HSTSEnabled.Bool())
+	plan.HSTSSubdomains = types.BoolValue(proxyHost.HSTSSubdomains.Bool())
+	plan.HTTP2Support = types.BoolValue(proxyHost.HTTP2Support.Bool())
+	plan.BlockExploits = types.BoolValue(proxyHost.BlockExploits.Bool())
+	plan.CachingEnabled = types.BoolValue(proxyHost.CachingEnabled.Bool())
+	plan.AllowWebsocketUpgrade = types.BoolValue(proxyHost.AllowWebsocketUpgrade.Bool())
+	plan.AccessListID = types.Int64Value(proxyHost.AccessListID)
+	plan.AdvancedConfig = types.StringValue(proxyHost.AdvancedConfig)
+	plan.Enabled = types.BoolValue(proxyHost.Enabled.Bool())
+	plan.Meta = meta
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
-// Delete deletes the resource and removes the Terraform state on success.
 func (r *proxyHostResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state proxyHostResourceModel
+	diags := req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	err := r.client.DeleteProxyHost(state.ID.ValueInt64Pointer())
+	if err != nil {
+		resp.Diagnostics.AddError("Error deleting proxy host", "Could not delete proxy host, unexpected error: "+err.Error())
+		return
+	}
+}
+
+func (r *proxyHostResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var data proxyHostResourceModel
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	if data.SSLForced.ValueBool() && data.CertificateID.ValueString() == "" {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("ssl_forced"),
+			"Certificate ID is required when SSL is forced",
+			"Certificate ID is required when SSL is forced")
+	}
+
+	if data.HTTP2Support.ValueBool() && data.CertificateID.ValueString() == "" {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("http2_support"),
+			"Certificate ID is required when HTTP/2 Support is enabled",
+			"Certificate ID is required when HTTP/2 Support is enabled")
+	}
+
+	if data.HSTSEnabled.ValueBool() && !data.SSLForced.ValueBool() {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("hsts_enabled"),
+			"SSL must be forced when HSTS is enabled",
+			"SSL must be forced when HSTS is enabled")
+	}
+
+	if data.HSTSSubdomains.ValueBool() && !data.HSTSEnabled.ValueBool() {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("hsts_subdomains"),
+			"HSTS must be enabled when HSTS Subdomains is enabled",
+			"HSTS must be enabled when HSTS Subdomains is enabled")
+	}
+}
+
+func (r *proxyHostResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

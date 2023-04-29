@@ -1,6 +1,6 @@
 package models
 
-type ProxyHostCreate struct {
+type ProxyHostUpdate struct {
 	DomainNames           []string            `json:"domain_names"`
 	ForwardScheme         string              `json:"forward_scheme"`
 	ForwardHost           string              `json:"forward_host"`
