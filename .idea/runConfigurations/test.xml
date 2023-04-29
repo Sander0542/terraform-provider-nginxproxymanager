@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="test" type="GoTestRunConfiguration" factoryName="Go Test">
+    <module name="terraform-provider-nginxproxymanager" />
+    <working_directory value="$PROJECT_DIR$" />
+    <envs>
+      <env name="TF_ACC" value="1" />
+    </envs>
+    <kind value="DIRECTORY" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>
