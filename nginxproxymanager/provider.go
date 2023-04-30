@@ -2,10 +2,6 @@ package nginxproxymanager
 
 import (
 	"context"
-	"os"
-
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -13,17 +9,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
+	"os"
 )
 
 var (
 	_ provider.Provider = &nginxproxymanagerProvider{}
 )
 
-func New() provider.Provider {
-	return &nginxproxymanagerProvider{}
+func New(version string) func() provider.Provider {
+	return func() provider.Provider {
+		return &nginxproxymanagerProvider{
+			Version: version,
+		}
+	}
 }
 
-type nginxproxymanagerProvider struct{}
+type nginxproxymanagerProvider struct {
+	Version string
+}
 
 type nginxproxymanagerProviderModel struct {
 	Host     types.String `tfsdk:"host"`
