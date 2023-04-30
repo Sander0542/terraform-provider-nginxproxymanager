@@ -7,18 +7,23 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 var (
-	_ datasource.DataSource              = &certificatesDataSource{}
+	_ common.IDataSource                 = &certificatesDataSource{}
 	_ datasource.DataSourceWithConfigure = &certificatesDataSource{}
 )
 
 func NewCertificatesDataSource() datasource.DataSource {
-	return &certificatesDataSource{}
+	b := &common.DataSource{}
+	d := &certificatesDataSource{b, nil}
+	b.IDataSource = d
+	return d
 }
 
 type certificatesDataSource struct {
+	*common.DataSource
 	client *client.Client
 }
 
@@ -37,11 +42,11 @@ type certificateItem struct {
 	Meta        types.Map    `tfsdk:"meta"`
 }
 
-func (d *certificatesDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *certificatesDataSource) MetadataImpl(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_certificates"
 }
 
-func (d *certificatesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *certificatesDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Certificates data source",
 		Attributes: map[string]schema.Attribute{
@@ -98,7 +103,7 @@ func (d *certificatesDataSource) Configure(_ context.Context, req datasource.Con
 	d.client = req.ProviderData.(*client.Client)
 }
 
-func (d *certificatesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *certificatesDataSource) ReadImpl(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data certificatesDataSourceModel
 
 	certificates, err := d.client.GetCertificates()

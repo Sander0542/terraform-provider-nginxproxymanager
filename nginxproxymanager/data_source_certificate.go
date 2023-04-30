@@ -8,18 +8,23 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 var (
-	_ datasource.DataSource              = &certificateDataSource{}
+	_ common.IDataSource                 = &certificateDataSource{}
 	_ datasource.DataSourceWithConfigure = &certificateDataSource{}
 )
 
 func NewCertificateDataSource() datasource.DataSource {
-	return &certificateDataSource{}
+	b := &common.DataSource{}
+	d := &certificateDataSource{b, nil}
+	b.IDataSource = d
+	return d
 }
 
 type certificateDataSource struct {
+	*common.DataSource
 	client *client.Client
 }
 
@@ -34,11 +39,11 @@ type certificateDataSourceModel struct {
 	Meta        types.Map    `tfsdk:"meta"`
 }
 
-func (d *certificateDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *certificateDataSource) MetadataImpl(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_certificate"
 }
 
-func (d *certificateDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *certificateDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Certificate data source",
 		Attributes: map[string]schema.Attribute{
@@ -88,7 +93,7 @@ func (d *certificateDataSource) Configure(_ context.Context, req datasource.Conf
 	d.client = req.ProviderData.(*client.Client)
 }
 
-func (d *certificateDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *certificateDataSource) ReadImpl(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data certificateDataSourceModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)

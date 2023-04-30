@@ -7,18 +7,23 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 var (
-	_ datasource.DataSource              = &proxyHostsDataSource{}
+	_ common.IDataSource                 = &proxyHostsDataSource{}
 	_ datasource.DataSourceWithConfigure = &proxyHostsDataSource{}
 )
 
 func NewProxyHostsDataSource() datasource.DataSource {
-	return &proxyHostsDataSource{}
+	b := &common.DataSource{}
+	d := &proxyHostsDataSource{b, nil}
+	b.IDataSource = d
+	return d
 }
 
 type proxyHostsDataSource struct {
+	*common.DataSource
 	client *client.Client
 }
 
@@ -49,11 +54,11 @@ type proxyHostItem struct {
 	Locations             types.List   `tfsdk:"locations"`
 }
 
-func (d *proxyHostsDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *proxyHostsDataSource) MetadataImpl(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_proxy_hosts"
 }
 
-func (d *proxyHostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *proxyHostsDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Proxy Hosts data source",
 		Attributes: map[string]schema.Attribute{
@@ -182,7 +187,7 @@ func (d *proxyHostsDataSource) Configure(_ context.Context, req datasource.Confi
 	d.client = req.ProviderData.(*client.Client)
 }
 
-func (d *proxyHostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *proxyHostsDataSource) ReadImpl(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data proxyHostsDataSourceModel
 
 	proxyHosts, err := d.client.GetProxyHosts()
