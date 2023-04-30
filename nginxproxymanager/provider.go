@@ -152,6 +152,33 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	tflog.Debug(ctx, "Initializing Sentry")
+
+	environment := "production"
+	if p.Version == "dev" || p.Version == "test" {
+		environment = p.Version
+	}
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:              "https://2ec435e840424aeb8c40b56dea37e4dd@o476647.ingest.sentry.io/4505102669447168",
+		EnableTracing:    true,
+		Environment:      environment,
+		Release:          fmt.Sprintf("terraform-provider-nginxproxymanager@%s", p.Version),
+		TracesSampleRate: 1.0,
+	})
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Initialize Sentry",
+			"An unexpected error occurred when initializing Sentry. "+
+				"If the error is not clear, please contact the provider developers.\n\n"+
+				"Sentry Error: "+err.Error(),
+		)
+		return
+	}
+
+	tflog.Debug(ctx, "Creating Nginx Proxy Manager client")
+
 	npmClient, err := client.NewClient(&host, &username, &password)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -168,24 +195,8 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 	ctx = tflog.SetField(ctx, "nginxproxymanager_password", password)
 	ctx = tflog.MaskFieldValuesWithFieldKeys(ctx, "nginxproxymanager_password")
 
-	tflog.Debug(ctx, "Creating Nginx Proxy Manager client")
-
 	resp.DataSourceData = npmClient
 	resp.ResourceData = npmClient
-
-	var environment = "production"
-	if p.Version != "dev" && p.Version != "test" {
-		environment = p.Version
-	}
-
-	_ = sentry.Init(sentry.ClientOptions{
-		Dsn:              "https://2ec435e840424aeb8c40b56dea37e4dd@o476647.ingest.sentry.io/4505102669447168",
-		EnableTracing:    true,
-		Environment:      environment,
-		Release:          fmt.Sprintf("terraform-provider-nginxproxymanager@%s", p.Version),
-		TracesSampleRate: 1.0,
-	})
-	npmClient.HTTPClient.Transport = newTracingTransport(context.Background(), npmClient.HTTPClient.Transport)
 
 	tflog.Info(ctx, "Configured Nginx Proxy Manager client", map[string]any{"success": true})
 }
