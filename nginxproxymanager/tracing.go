@@ -1,7 +1,6 @@
 package nginxproxymanager
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
@@ -10,15 +9,17 @@ import (
 
 type tracingTransport struct {
 	inner http.RoundTripper
-	ctx   context.Context
 }
 
-func newTracingTransport(ctx context.Context, inner http.RoundTripper) *tracingTransport {
-	return &tracingTransport{inner, ctx}
+func newTracingTransport(inner http.RoundTripper) *tracingTransport {
+	if inner == nil {
+		inner = http.DefaultTransport
+	}
+	return &tracingTransport{inner}
 }
 
 func (t *tracingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	span := sentry.StartSpan(t.ctx, "nginxproxymanager.go.http_request")
+	span := sentry.StartSpan(req.Context(), "nginxproxymanager.go.http_request")
 	req.Header.Set("sentry-trace", span.ToSentryTrace())
 	span.Description = fmt.Sprintf("%s %s", req.Method, req.URL.Path)
 	span.SetTag("http.method", req.Method)
