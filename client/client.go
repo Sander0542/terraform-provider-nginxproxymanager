@@ -15,7 +15,10 @@ type Client struct {
 
 func NewClient(host, username, password *string) (*Client, error) {
 	c := Client{
-		HTTPClient: &http.Client{Timeout: 10 * time.Second},
+		HTTPClient: &http.Client{
+			Timeout:   10 * time.Second,
+			Transport: http.DefaultTransport,
+		},
 	}
 
 	if host != nil {
