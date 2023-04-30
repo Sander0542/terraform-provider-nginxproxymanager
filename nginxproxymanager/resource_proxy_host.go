@@ -291,7 +291,7 @@ func (r *proxyHostResource) CreateImpl(ctx context.Context, req resource.CreateR
 		})
 	}
 
-	proxyHost, err := r.client.CreateProxyHost(&item)
+	proxyHost, err := r.client.CreateProxyHost(ctx, &item)
 	if err != nil {
 		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error creating proxy host", "Could not create proxy host, unexpected error: "+err.Error())
@@ -322,7 +322,7 @@ func (r *proxyHostResource) ReadImpl(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	proxyHost, err := r.client.GetProxyHost(state.ID.ValueInt64Pointer())
+	proxyHost, err := r.client.GetProxyHost(ctx, state.ID.ValueInt64Pointer())
 	if err != nil {
 		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error reading proxy host", "Could not read proxy host, unexpected error: "+err.Error())
@@ -414,7 +414,7 @@ func (r *proxyHostResource) UpdateImpl(ctx context.Context, req resource.UpdateR
 		})
 	}
 
-	proxyHost, err := r.client.UpdateProxyHost(plan.ID.ValueInt64Pointer(), &item)
+	proxyHost, err := r.client.UpdateProxyHost(ctx, plan.ID.ValueInt64Pointer(), &item)
 	if err != nil {
 		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error updating proxy host", "Could not update proxy host, unexpected error: "+err.Error())
@@ -472,7 +472,7 @@ func (r *proxyHostResource) DeleteImpl(ctx context.Context, req resource.DeleteR
 		return
 	}
 
-	err := r.client.DeleteProxyHost(state.ID.ValueInt64Pointer())
+	err := r.client.DeleteProxyHost(ctx, state.ID.ValueInt64Pointer())
 	if err != nil {
 		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error deleting proxy host", "Could not delete proxy host, unexpected error: "+err.Error())

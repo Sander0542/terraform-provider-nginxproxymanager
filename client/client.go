@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -29,7 +30,7 @@ func NewClient(host, username, password *string) (*Client, error) {
 		return &c, nil
 	}
 
-	ar, err := c.Authenticate(username, password)
+	ar, err := c.Authenticate(context.Background(), username, password)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -16,7 +17,7 @@ type AuthResponse struct {
 	Token string `json:"token"`
 }
 
-func (c *Client) Authenticate(username, password *string) (*AuthResponse, error) {
+func (c *Client) Authenticate(ctx context.Context, username, password *string) (*AuthResponse, error) {
 	if *username == "" || *password == "" {
 		return nil, fmt.Errorf("username and password must be set")
 	}
@@ -31,7 +32,7 @@ func (c *Client) Authenticate(username, password *string) (*AuthResponse, error)
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/tokens", c.HostURL), strings.NewReader(string(rb)))
+	req, err := http.NewRequestWithContext(ctx, "POST", fmt.Sprintf("%s/api/tokens", c.HostURL), strings.NewReader(string(rb)))
 	if err != nil {
 		return nil, err
 	}

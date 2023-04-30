@@ -99,7 +99,7 @@ func (d *certificateDataSource) ReadImpl(ctx context.Context, req datasource.Rea
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	certificate, err := d.client.GetCertificate(data.ID.ValueInt64Pointer())
+	certificate, err := d.client.GetCertificate(ctx, data.ID.ValueInt64Pointer())
 	if err != nil {
 		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error reading certificate", "Could not read certificate, unexpected error: "+err.Error())

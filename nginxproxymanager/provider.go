@@ -195,7 +195,7 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 		)
 		return
 	}
-	npmClient.HTTPClient.Transport = newTracingTransport(context.Background(), npmClient.HTTPClient.Transport)
+	npmClient.HTTPClient.Transport = newTracingTransport(npmClient.HTTPClient.Transport)
 
 	ctx = tflog.SetField(ctx, "nginxproxymanager_host", host)
 	ctx = tflog.SetField(ctx, "nginxproxymanager_username", username)

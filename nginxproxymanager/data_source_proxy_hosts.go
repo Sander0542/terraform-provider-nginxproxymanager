@@ -191,7 +191,7 @@ func (d *proxyHostsDataSource) Configure(_ context.Context, req datasource.Confi
 func (d *proxyHostsDataSource) ReadImpl(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data proxyHostsDataSourceModel
 
-	proxyHosts, err := d.client.GetProxyHosts()
+	proxyHosts, err := d.client.GetProxyHosts(ctx)
 	if err != nil {
 		sentry.CaptureException(err)
 		resp.Diagnostics.AddError(

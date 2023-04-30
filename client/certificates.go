@@ -1,14 +1,15 @@
 package client
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
 	"net/http"
 )
 
-func (c *Client) GetCertificates() (*models.CertificatesResponse, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/nginx/certificates", c.HostURL), nil)
+func (c *Client) GetCertificates(ctx context.Context) (*models.CertificatesResponse, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/certificates", c.HostURL), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -27,8 +28,8 @@ func (c *Client) GetCertificates() (*models.CertificatesResponse, error) {
 	return &ar, nil
 }
 
-func (c *Client) GetCertificate(id *int64) (*models.CertificateResponse, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/nginx/certificates/%d", c.HostURL, *id), nil)
+func (c *Client) GetCertificate(ctx context.Context, id *int64) (*models.CertificateResponse, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/certificates/%d", c.HostURL, *id), nil)
 	if err != nil {
 		return nil, err
 	}

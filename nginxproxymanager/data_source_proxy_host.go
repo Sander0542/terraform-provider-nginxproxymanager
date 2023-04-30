@@ -183,7 +183,7 @@ func (d *proxyHostDataSource) ReadImpl(ctx context.Context, req datasource.ReadR
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	proxyHost, err := d.client.GetProxyHost(data.ID.ValueInt64Pointer())
+	proxyHost, err := d.client.GetProxyHost(ctx, data.ID.ValueInt64Pointer())
 	if err != nil {
 		sentry.CaptureException(err)
 		resp.Diagnostics.AddError(
