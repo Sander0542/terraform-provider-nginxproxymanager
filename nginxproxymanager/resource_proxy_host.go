@@ -33,7 +33,7 @@ var (
 )
 
 func NewProxyHostResource() resource.Resource {
-	b := &common.Resource{}
+	b := &common.Resource{Name: "proxy_host"}
 	r := &proxyHostResource{b, nil}
 	b.IResource = r
 	return r

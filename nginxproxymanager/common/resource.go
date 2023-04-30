@@ -3,7 +3,6 @@ package common
 import (
 	"context"
 	"fmt"
-
 	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
@@ -24,13 +23,11 @@ type IResource interface {
 type Resource struct {
 	IResource
 
-	resourceName string
+	Name string
 }
 
 func (r *Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	r.MetadataImpl(ctx, req, resp)
-
-	r.resourceName = fmt.Sprintf("Resource %s", resp.TypeName)
 }
 
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
@@ -38,25 +35,25 @@ func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp 
 }
 
 func (r *Resource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	span := sentry.StartSpan(ctx, "terraform.resource.read", sentry.TransactionName(r.resourceName))
+	span := sentry.StartSpan(ctx, "terraform.resource.read", sentry.TransactionName(fmt.Sprintf("resource.%s.read", r.Name)))
 	defer span.Finish()
 	r.ReadImpl(ctx, req, resp)
 }
 
 func (r *Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	span := sentry.StartSpan(ctx, "terraform.resource.create", sentry.TransactionName(r.resourceName))
+	span := sentry.StartSpan(ctx, "terraform.resource.create", sentry.TransactionName(fmt.Sprintf("resource.%s.create", r.Name)))
 	defer span.Finish()
 	r.CreateImpl(ctx, req, resp)
 }
 
 func (r *Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	span := sentry.StartSpan(ctx, "terraform.resource.update", sentry.TransactionName(r.resourceName))
+	span := sentry.StartSpan(ctx, "terraform.resource.update", sentry.TransactionName(fmt.Sprintf("resource.%s.update", r.Name)))
 	defer span.Finish()
 	r.UpdateImpl(ctx, req, resp)
 }
 
 func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	span := sentry.StartSpan(ctx, "terraform.resource.delete", sentry.TransactionName(r.resourceName))
+	span := sentry.StartSpan(ctx, "terraform.resource.delete", sentry.TransactionName(fmt.Sprintf("resource.%s.delete", r.Name)))
 	defer span.Finish()
 	r.DeleteImpl(ctx, req, resp)
 }

@@ -16,7 +16,7 @@ var (
 )
 
 func NewCertificatesDataSource() datasource.DataSource {
-	b := &common.DataSource{}
+	b := &common.DataSource{Name: "certificates"}
 	d := &certificatesDataSource{b, nil}
 	b.IDataSource = d
 	return d

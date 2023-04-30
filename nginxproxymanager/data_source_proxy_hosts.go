@@ -16,7 +16,7 @@ var (
 )
 
 func NewProxyHostsDataSource() datasource.DataSource {
-	b := &common.DataSource{}
+	b := &common.DataSource{Name: "proxy_hosts"}
 	d := &proxyHostsDataSource{b, nil}
 	b.IDataSource = d
 	return d
