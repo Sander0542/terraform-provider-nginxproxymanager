@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     nginxproxymanager = {
-      source = "hashicorp.com/edu/nginxproxymanager"
+      source = "registry.terraform.io/sander0542/nginxproxymanager"
     }
   }
 }

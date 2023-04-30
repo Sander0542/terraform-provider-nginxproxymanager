@@ -35,7 +35,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/hashicorp/scaffolding",
+		Address: "registry.terraform.io/sander0542/nginxproxymanager",
 		Debug:   debug,
 	}
 
