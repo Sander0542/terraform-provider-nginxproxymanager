@@ -118,7 +118,7 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 			path.Root("host"),
 			"Missing Nginx Proxy Manager API Host",
 			"The provider cannot create the Nginx Proxy Manager API client as there is a missing or empty value for the Nginx Proxy Manager API host. "+
-				"Set the host value in the configuration or use the NGINX_PROXY_MANAGER_URL environment variable. "+
+				"Set the host value in the configuration or use the NGINX_PROXY_MANAGER_HOST environment variable. "+
 				"If either is already set, ensure the value is not empty.",
 		)
 	}
