@@ -3,8 +3,9 @@ package nginxproxymanager
 import (
 	"context"
 	"fmt"
-	"github.com/getsentry/sentry-go"
 	"net/http"
+
+	"github.com/getsentry/sentry-go"
 )
 
 type tracingTransport struct {

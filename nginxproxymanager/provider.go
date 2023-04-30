@@ -3,6 +3,8 @@ package nginxproxymanager
 import (
 	"context"
 	"fmt"
+	"os"
+
 	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -12,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
-	"os"
 )
 
 var (

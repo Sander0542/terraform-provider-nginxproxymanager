@@ -2,6 +2,8 @@ package nginxproxymanager
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -20,21 +22,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
-	"strconv"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 var (
-	_ resource.Resource                   = &proxyHostResource{}
+	_ common.IResource                    = &proxyHostResource{}
 	_ resource.ResourceWithConfigure      = &proxyHostResource{}
 	_ resource.ResourceWithValidateConfig = &proxyHostResource{}
 	_ resource.ResourceWithImportState    = &proxyHostResource{}
 )
 
 func NewProxyHostResource() resource.Resource {
-	return &proxyHostResource{}
+	b := &common.Resource{}
+	r := &proxyHostResource{b, nil}
+	b.IResource = r
+	return r
 }
 
 type proxyHostResource struct {
+	*common.Resource
 	client *client.Client
 }
 
@@ -69,11 +75,11 @@ type proxyHostLocationModel struct {
 	AdvancedConfig types.String `tfsdk:"advanced_config"`
 }
 
-func (r *proxyHostResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (r *proxyHostResource) MetadataImpl(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_proxy_host"
 }
 
-func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *proxyHostResource) SchemaImpl(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Manage a proxy host.",
 		Attributes: map[string]schema.Attribute{
@@ -245,7 +251,7 @@ func (r *proxyHostResource) Configure(_ context.Context, req resource.ConfigureR
 	r.client = req.ProviderData.(*client.Client)
 }
 
-func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *proxyHostResource) CreateImpl(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan proxyHostResourceModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -306,7 +312,7 @@ func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	}
 }
 
-func (r *proxyHostResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *proxyHostResource) ReadImpl(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state *proxyHostResourceModel
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -366,7 +372,7 @@ func (r *proxyHostResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 }
 
-func (r *proxyHostResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *proxyHostResource) UpdateImpl(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan proxyHostResourceModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -454,7 +460,7 @@ func (r *proxyHostResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 }
 
-func (r *proxyHostResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *proxyHostResource) DeleteImpl(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state proxyHostResourceModel
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
