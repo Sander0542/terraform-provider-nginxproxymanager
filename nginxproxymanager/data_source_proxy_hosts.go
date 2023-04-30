@@ -2,6 +2,7 @@ package nginxproxymanager
 
 import (
 	"context"
+	"github.com/getsentry/sentry-go"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -192,6 +193,7 @@ func (d *proxyHostsDataSource) ReadImpl(ctx context.Context, req datasource.Read
 
 	proxyHosts, err := d.client.GetProxyHosts()
 	if err != nil {
+		sentry.CaptureException(err)
 		resp.Diagnostics.AddError(
 			"Error reading proxy hosts",
 			"Could not read proxy hosts, unexpected error: "+err.Error())

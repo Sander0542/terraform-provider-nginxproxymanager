@@ -3,6 +3,7 @@ package nginxproxymanager
 import (
 	"context"
 	"fmt"
+	"github.com/getsentry/sentry-go"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -100,6 +101,7 @@ func (d *certificateDataSource) ReadImpl(ctx context.Context, req datasource.Rea
 
 	certificate, err := d.client.GetCertificate(data.ID.ValueInt64Pointer())
 	if err != nil {
+		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error reading certificate", "Could not read certificate, unexpected error: "+err.Error())
 		return
 	}
