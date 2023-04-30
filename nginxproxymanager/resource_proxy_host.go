@@ -20,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"strconv"
 )
 
 var (
@@ -507,5 +508,12 @@ func (r *proxyHostResource) ValidateConfig(ctx context.Context, req resource.Val
 }
 
 func (r *proxyHostResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	id, err := strconv.ParseInt(req.ID, 10, 64)
+	if err != nil {
+		resp.Diagnostics.AddError("Error importing proxy host", "Could not import proxy host, unexpected error: "+err.Error())
+		return
+	}
+
+	diags := resp.State.SetAttribute(ctx, path.Root("id"), types.Int64Value(id))
+	resp.Diagnostics.Append(diags...)
 }
