@@ -177,6 +177,11 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 		)
 		return
 	}
+	sentry.ConfigureScope(func(scope *sentry.Scope) {
+		scope.SetContext("terraform", map[string]interface{}{
+			"version": req.TerraformVersion,
+		})
+	})
 
 	tflog.Debug(ctx, "Creating Nginx Proxy Manager client")
 
