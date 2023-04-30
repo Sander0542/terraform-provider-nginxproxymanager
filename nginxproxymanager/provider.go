@@ -2,6 +2,8 @@ package nginxproxymanager
 
 import (
 	"context"
+	"fmt"
+	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -170,6 +172,20 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 
 	resp.DataSourceData = npmClient
 	resp.ResourceData = npmClient
+
+	var environment = "production"
+	if p.Version != "dev" && p.Version != "test" {
+		environment = p.Version
+	}
+
+	_ = sentry.Init(sentry.ClientOptions{
+		Dsn:              "https://2ec435e840424aeb8c40b56dea37e4dd@o476647.ingest.sentry.io/4505102669447168",
+		EnableTracing:    true,
+		Environment:      environment,
+		Release:          fmt.Sprintf("terraform-provider-nginxproxymanager@%s", p.Version),
+		TracesSampleRate: 1.0,
+	})
+	npmClient.HTTPClient.Transport = newTracingTransport(context.Background(), npmClient.HTTPClient.Transport)
 
 	tflog.Info(ctx, "Configured Nginx Proxy Manager client", map[string]any{"success": true})
 }
