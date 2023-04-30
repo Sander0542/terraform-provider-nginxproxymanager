@@ -13,7 +13,7 @@ const (
 
 var (
 	testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
-		"nginxproxymanager": providerserver.NewProtocol6WithError(New()),
+		"nginxproxymanager": providerserver.NewProtocol6WithError(New("test")()),
 	}
 )
 
