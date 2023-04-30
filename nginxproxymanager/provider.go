@@ -146,7 +146,7 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	client, err := client.NewClient(&host, &username, &password)
+	npmClient, err := client.NewClient(&host, &username, &password)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create Nginx Proxy Manager API Client",
@@ -164,8 +164,8 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 
 	tflog.Debug(ctx, "Creating Nginx Proxy Manager client")
 
-	resp.DataSourceData = client
-	resp.ResourceData = client
+	resp.DataSourceData = npmClient
+	resp.ResourceData = npmClient
 
 	tflog.Info(ctx, "Configured Nginx Proxy Manager client", map[string]any{"success": true})
 }

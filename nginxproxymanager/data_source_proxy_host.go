@@ -179,16 +179,14 @@ func (d *proxyHostDataSource) Read(ctx context.Context, req datasource.ReadReque
 	proxyHost, err := d.client.GetProxyHost(data.ID.ValueInt64Pointer())
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Could not read proxy host",
-			err.Error(),
-		)
+			"Error reading proxy host",
+			"Could not read proxy host, unexpected error: "+err.Error())
 		return
 	}
 	if proxyHost == nil {
 		resp.Diagnostics.AddError(
-			"Could not read proxy host",
-			fmt.Sprintf("No proxy host found with ID: %d", data.ID),
-		)
+			"Error reading proxy host",
+			fmt.Sprintf("No proxy host found with ID: %d", data.ID))
 		return
 	}
 

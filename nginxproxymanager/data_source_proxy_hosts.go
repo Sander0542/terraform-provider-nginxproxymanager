@@ -188,9 +188,8 @@ func (d *proxyHostsDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	proxyHosts, err := d.client.GetProxyHosts()
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Read Nginx Proxy Manager Proxy Host",
-			err.Error(),
-		)
+			"Error reading proxy hosts",
+			"Could not read proxy hosts, unexpected error: "+err.Error())
 		return
 	}
 
