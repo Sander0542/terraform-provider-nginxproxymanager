@@ -77,6 +77,7 @@ resource "nginxproxymanager_proxy_hosts" "example" {
 - `id` (Number) The ID of the proxy host.
 - `meta` (Map of String) The meta data associated with the proxy host.
 - `modified_on` (String) The date and time the proxy host was last modified.
+- `owner_user_id` (Number) The ID of the user that owns the proxy host.
 
 <a id="nestedblock--location"></a>
 ### Nested Schema for `location`
