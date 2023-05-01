@@ -8,6 +8,7 @@ type ProxyHostResponse struct {
 	ID                    int64               `json:"id"`
 	CreatedOn             string              `json:"created_on"`
 	ModifiedOn            string              `json:"modified_on"`
+	OwnerUserID           int64               `json:"owner_user_id"`
 	DomainNames           []string            `json:"domain_names"`
 	ForwardScheme         string              `json:"forward_scheme"`
 	ForwardHost           string              `json:"forward_host"`
