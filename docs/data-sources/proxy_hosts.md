@@ -48,6 +48,7 @@ Read-Only:
 - `locations` (Attributes List) The locations associated with the proxy host. (see [below for nested schema](#nestedatt--proxy_hosts--locations))
 - `meta` (Map of String) The meta data associated with the proxy host.
 - `modified_on` (String) The date and time the proxy host was last modified.
+- `owner_user_id` (Number) The ID of the user that owns the proxy host.
 - `ssl_forced` (Boolean) Whether SSL is forced for the proxy host.
 
 <a id="nestedatt--proxy_hosts--locations"></a>
