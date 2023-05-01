@@ -30,6 +30,7 @@ type proxyHostItem struct {
 	ID                    types.Int64  `tfsdk:"id"`
 	CreatedOn             types.String `tfsdk:"created_on"`
 	ModifiedOn            types.String `tfsdk:"modified_on"`
+	OwnerUserID           types.Int64  `tfsdk:"owner_user_id"`
 	DomainNames           types.List   `tfsdk:"domain_names"`
 	ForwardScheme         types.String `tfsdk:"forward_scheme"`
 	ForwardHost           types.String `tfsdk:"forward_host"`
@@ -71,6 +72,10 @@ func (d *proxyHostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 						},
 						"modified_on": schema.StringAttribute{
 							Description: "The date and time the proxy host was last modified.",
+							Computed:    true,
+						},
+						"owner_user_id": schema.Int64Attribute{
+							Description: "The ID of the user that owns the proxy host.",
 							Computed:    true,
 						},
 						"domain_names": schema.ListAttribute{
@@ -203,6 +208,7 @@ func (d *proxyHostsDataSource) Read(ctx context.Context, req datasource.ReadRequ
 			ID:                    types.Int64Value(value.ID),
 			CreatedOn:             types.StringValue(value.CreatedOn),
 			ModifiedOn:            types.StringValue(value.ModifiedOn),
+			OwnerUserID:           types.Int64Value(value.OwnerUserID),
 			DomainNames:           domainNames,
 			ForwardScheme:         types.StringValue(value.ForwardScheme),
 			ForwardHost:           types.StringValue(value.ForwardHost),

@@ -2,6 +2,8 @@ package nginxproxymanager
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -12,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -20,7 +21,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
-	"strconv"
 )
 
 var (
@@ -42,6 +42,7 @@ type proxyHostResourceModel struct {
 	ID                    types.Int64              `tfsdk:"id"`
 	CreatedOn             types.String             `tfsdk:"created_on"`
 	ModifiedOn            types.String             `tfsdk:"modified_on"`
+	OwnerUserID           types.Int64              `tfsdk:"owner_user_id"`
 	DomainNames           []types.String           `tfsdk:"domain_names"`
 	ForwardScheme         types.String             `tfsdk:"forward_scheme"`
 	ForwardHost           types.String             `tfsdk:"forward_host"`
@@ -93,6 +94,10 @@ func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			},
 			"modified_on": schema.StringAttribute{
 				Description: "The date and time the proxy host was last modified.",
+				Computed:    true,
+			},
+			"owner_user_id": schema.Int64Attribute{
+				Description: "The ID of the user that owns the proxy host.",
 				Computed:    true,
 			},
 			"domain_names": schema.ListAttribute{
@@ -192,9 +197,6 @@ func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "The meta data associated with the proxy host.",
 				ElementType: types.StringType,
 				Computed:    true,
-				PlanModifiers: []planmodifier.Map{
-					mapplanmodifier.UseStateForUnknown(),
-				},
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -296,6 +298,7 @@ func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	plan.ID = types.Int64Value(proxyHost.ID)
 	plan.CreatedOn = types.StringValue(proxyHost.CreatedOn)
 	plan.ModifiedOn = types.StringValue(proxyHost.ModifiedOn)
+	plan.OwnerUserID = types.Int64Value(proxyHost.OwnerUserID)
 	plan.Enabled = types.BoolValue(proxyHost.Enabled.Bool())
 	plan.Meta = meta
 
@@ -342,6 +345,7 @@ func (r *proxyHostResource) Read(ctx context.Context, req resource.ReadRequest, 
 		state.ID = types.Int64Value(proxyHost.ID)
 		state.CreatedOn = types.StringValue(proxyHost.CreatedOn)
 		state.ModifiedOn = types.StringValue(proxyHost.ModifiedOn)
+		state.OwnerUserID = types.Int64Value(proxyHost.OwnerUserID)
 		state.ForwardScheme = types.StringValue(proxyHost.ForwardScheme)
 		state.ForwardHost = types.StringValue(proxyHost.ForwardHost)
 		state.ForwardPort = types.Int64Value(int64(proxyHost.ForwardPort))
@@ -431,6 +435,7 @@ func (r *proxyHostResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 	plan.CreatedOn = types.StringValue(proxyHost.CreatedOn)
 	plan.ModifiedOn = types.StringValue(proxyHost.ModifiedOn)
+	plan.OwnerUserID = types.Int64Value(proxyHost.OwnerUserID)
 	plan.ForwardScheme = types.StringValue(proxyHost.ForwardScheme)
 	plan.ForwardHost = types.StringValue(proxyHost.ForwardHost)
 	plan.ForwardPort = types.Int64Value(int64(proxyHost.ForwardPort))
