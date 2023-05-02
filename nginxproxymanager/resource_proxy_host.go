@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -21,20 +22,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 var (
-	_ resource.Resource                   = &proxyHostResource{}
+	_ common.IResource                    = &proxyHostResource{}
 	_ resource.ResourceWithConfigure      = &proxyHostResource{}
 	_ resource.ResourceWithValidateConfig = &proxyHostResource{}
 	_ resource.ResourceWithImportState    = &proxyHostResource{}
 )
 
 func NewProxyHostResource() resource.Resource {
-	return &proxyHostResource{}
+	b := &common.Resource{Name: "proxy_host"}
+	r := &proxyHostResource{b, nil}
+	b.IResource = r
+	return r
 }
 
 type proxyHostResource struct {
+	*common.Resource
 	client *client.Client
 }
 
@@ -70,11 +76,11 @@ type proxyHostLocationModel struct {
 	AdvancedConfig types.String `tfsdk:"advanced_config"`
 }
 
-func (r *proxyHostResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (r *proxyHostResource) MetadataImpl(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_proxy_host"
 }
 
-func (r *proxyHostResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *proxyHostResource) SchemaImpl(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Manage a proxy host.",
 		Attributes: map[string]schema.Attribute{
@@ -247,7 +253,7 @@ func (r *proxyHostResource) Configure(_ context.Context, req resource.ConfigureR
 	r.client = req.ProviderData.(*client.Client)
 }
 
-func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (r *proxyHostResource) CreateImpl(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan proxyHostResourceModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -286,8 +292,9 @@ func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateReque
 		})
 	}
 
-	proxyHost, err := r.client.CreateProxyHost(&item)
+	proxyHost, err := r.client.CreateProxyHost(ctx, &item)
 	if err != nil {
+		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error creating proxy host", "Could not create proxy host, unexpected error: "+err.Error())
 		return
 	}
@@ -309,7 +316,7 @@ func (r *proxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	}
 }
 
-func (r *proxyHostResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+func (r *proxyHostResource) ReadImpl(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	var state *proxyHostResourceModel
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -317,8 +324,9 @@ func (r *proxyHostResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	proxyHost, err := r.client.GetProxyHost(state.ID.ValueInt64Pointer())
+	proxyHost, err := r.client.GetProxyHost(ctx, state.ID.ValueInt64Pointer())
 	if err != nil {
+		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error reading proxy host", "Could not read proxy host, unexpected error: "+err.Error())
 		return
 	}
@@ -370,7 +378,7 @@ func (r *proxyHostResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 }
 
-func (r *proxyHostResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (r *proxyHostResource) UpdateImpl(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan proxyHostResourceModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -409,8 +417,9 @@ func (r *proxyHostResource) Update(ctx context.Context, req resource.UpdateReque
 		})
 	}
 
-	proxyHost, err := r.client.UpdateProxyHost(plan.ID.ValueInt64Pointer(), &item)
+	proxyHost, err := r.client.UpdateProxyHost(ctx, plan.ID.ValueInt64Pointer(), &item)
 	if err != nil {
+		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error updating proxy host", "Could not update proxy host, unexpected error: "+err.Error())
 		return
 	}
@@ -459,7 +468,7 @@ func (r *proxyHostResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 }
 
-func (r *proxyHostResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (r *proxyHostResource) DeleteImpl(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state proxyHostResourceModel
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
@@ -467,8 +476,9 @@ func (r *proxyHostResource) Delete(ctx context.Context, req resource.DeleteReque
 		return
 	}
 
-	err := r.client.DeleteProxyHost(state.ID.ValueInt64Pointer())
+	err := r.client.DeleteProxyHost(ctx, state.ID.ValueInt64Pointer())
 	if err != nil {
+		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error deleting proxy host", "Could not delete proxy host, unexpected error: "+err.Error())
 		return
 	}

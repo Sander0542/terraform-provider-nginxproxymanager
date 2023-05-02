@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -15,7 +16,10 @@ type Client struct {
 
 func NewClient(host, username, password *string) (*Client, error) {
 	c := Client{
-		HTTPClient: &http.Client{Timeout: 10 * time.Second},
+		HTTPClient: &http.Client{
+			Timeout:   10 * time.Second,
+			Transport: http.DefaultTransport,
+		},
 	}
 
 	if host != nil {
@@ -26,7 +30,7 @@ func NewClient(host, username, password *string) (*Client, error) {
 		return &c, nil
 	}
 
-	ar, err := c.Authenticate(username, password)
+	ar, err := c.Authenticate(context.Background(), username, password)
 	if err != nil {
 		return nil, err
 	}

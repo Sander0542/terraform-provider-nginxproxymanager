@@ -3,22 +3,29 @@ package nginxproxymanager
 import (
 	"context"
 	"fmt"
+	"github.com/getsentry/sentry-go"
+
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 var (
-	_ datasource.DataSource              = &proxyHostDataSource{}
+	_ common.IDataSource                 = &proxyHostDataSource{}
 	_ datasource.DataSourceWithConfigure = &proxyHostDataSource{}
 )
 
 func NewProxyHostDataSource() datasource.DataSource {
-	return &proxyHostDataSource{}
+	b := &common.DataSource{Name: "proxy_host"}
+	d := &proxyHostDataSource{b, nil}
+	b.IDataSource = d
+	return d
 }
 
 type proxyHostDataSource struct {
+	*common.DataSource
 	client *client.Client
 }
 
@@ -46,11 +53,11 @@ type proxyHostDataSourceModel struct {
 	Locations             types.List   `tfsdk:"locations"`
 }
 
-func (d *proxyHostDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *proxyHostDataSource) MetadataImpl(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_proxy_host"
 }
 
-func (d *proxyHostDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *proxyHostDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Fetches a proxy host by ID.",
 		Attributes: map[string]schema.Attribute{
@@ -176,13 +183,14 @@ func (d *proxyHostDataSource) Configure(_ context.Context, req datasource.Config
 	d.client = req.ProviderData.(*client.Client)
 }
 
-func (d *proxyHostDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+func (d *proxyHostDataSource) ReadImpl(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data proxyHostDataSourceModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
-	proxyHost, err := d.client.GetProxyHost(data.ID.ValueInt64Pointer())
+	proxyHost, err := d.client.GetProxyHost(ctx, data.ID.ValueInt64Pointer())
 	if err != nil {
+		sentry.CaptureException(err)
 		resp.Diagnostics.AddError(
 			"Error reading proxy host",
 			"Could not read proxy host, unexpected error: "+err.Error())

@@ -2,6 +2,10 @@ package nginxproxymanager
 
 import (
 	"context"
+	"fmt"
+	"os"
+
+	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -10,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
-	"os"
 )
 
 var (
@@ -150,6 +153,38 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	tflog.Debug(ctx, "Initializing Sentry")
+
+	environment := "production"
+	if p.Version == "dev" || p.Version == "test" {
+		environment = p.Version
+	}
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:              "https://2ec435e840424aeb8c40b56dea37e4dd@o476647.ingest.sentry.io/4505102669447168",
+		EnableTracing:    true,
+		Environment:      environment,
+		Release:          fmt.Sprintf("terraform-provider-nginxproxymanager@%s", p.Version),
+		TracesSampleRate: 1.0,
+	})
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Unable to Initialize Sentry",
+			"An unexpected error occurred when initializing Sentry. "+
+				"If the error is not clear, please contact the provider developers.\n\n"+
+				"Sentry Error: "+err.Error(),
+		)
+		return
+	}
+	sentry.ConfigureScope(func(scope *sentry.Scope) {
+		scope.SetContext("terraform", map[string]interface{}{
+			"version": req.TerraformVersion,
+		})
+	})
+
+	tflog.Debug(ctx, "Creating Nginx Proxy Manager client")
+
 	npmClient, err := client.NewClient(&host, &username, &password)
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -160,13 +195,12 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 		)
 		return
 	}
+	npmClient.HTTPClient.Transport = newTracingTransport(npmClient.HTTPClient.Transport)
 
 	ctx = tflog.SetField(ctx, "nginxproxymanager_host", host)
 	ctx = tflog.SetField(ctx, "nginxproxymanager_username", username)
 	ctx = tflog.SetField(ctx, "nginxproxymanager_password", password)
 	ctx = tflog.MaskFieldValuesWithFieldKeys(ctx, "nginxproxymanager_password")
-
-	tflog.Debug(ctx, "Creating Nginx Proxy Manager client")
 
 	resp.DataSourceData = npmClient
 	resp.ResourceData = npmClient

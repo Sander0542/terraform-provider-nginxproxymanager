@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
@@ -8,13 +9,13 @@ import (
 	"strings"
 )
 
-func (c *Client) CreateProxyHost(proxyHost *models.ProxyHostCreate) (*models.ProxyHostResponse, error) {
+func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *models.ProxyHostCreate) (*models.ProxyHostResponse, error) {
 	rb, err := json.Marshal(proxyHost)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/nginx/proxy-hosts", c.HostURL), strings.NewReader(string(rb)))
+	req, err := http.NewRequestWithContext(ctx, "POST", fmt.Sprintf("%s/api/nginx/proxy-hosts", c.HostURL), strings.NewReader(string(rb)))
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +36,8 @@ func (c *Client) CreateProxyHost(proxyHost *models.ProxyHostCreate) (*models.Pro
 	return &ar, nil
 }
 
-func (c *Client) GetProxyHosts() (*models.ProxyHostsResponse, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/nginx/proxy-hosts", c.HostURL), nil)
+func (c *Client) GetProxyHosts(ctx context.Context) (*models.ProxyHostsResponse, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/proxy-hosts", c.HostURL), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -55,8 +56,8 @@ func (c *Client) GetProxyHosts() (*models.ProxyHostsResponse, error) {
 	return &ar, nil
 }
 
-func (c *Client) GetProxyHost(id *int64) (*models.ProxyHostResponse, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), nil)
+func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*models.ProxyHostResponse, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -79,13 +80,13 @@ func (c *Client) GetProxyHost(id *int64) (*models.ProxyHostResponse, error) {
 	return &ar, nil
 }
 
-func (c *Client) UpdateProxyHost(id *int64, proxyHost *models.ProxyHostUpdate) (*models.ProxyHostResponse, error) {
+func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *models.ProxyHostUpdate) (*models.ProxyHostResponse, error) {
 	rb, err := json.Marshal(proxyHost)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), strings.NewReader(string(rb)))
+	req, err := http.NewRequestWithContext(ctx, "PUT", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), strings.NewReader(string(rb)))
 	if err != nil {
 		return nil, err
 	}
@@ -106,8 +107,8 @@ func (c *Client) UpdateProxyHost(id *int64, proxyHost *models.ProxyHostUpdate) (
 	return &ar, nil
 }
 
-func (c *Client) DeleteProxyHost(id *int64) error {
-	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), nil)
+func (c *Client) DeleteProxyHost(ctx context.Context, id *int64) error {
+	req, err := http.NewRequestWithContext(ctx, "DELETE", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), nil)
 	if err != nil {
 		return err
 	}
