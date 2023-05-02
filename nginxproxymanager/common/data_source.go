@@ -12,7 +12,6 @@ var (
 )
 
 type IDataSource interface {
-	MetadataImpl(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse)
 	SchemaImpl(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse)
 	ReadImpl(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse)
 }
@@ -23,8 +22,8 @@ type DataSource struct {
 	Name string
 }
 
-func (d *DataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	d.MetadataImpl(ctx, req, resp)
+func (d *DataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = fmt.Sprintf("%s_%s", req.ProviderTypeName, d.Name)
 }
 
 func (d *DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
