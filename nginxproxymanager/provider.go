@@ -182,12 +182,16 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 		scope.SetContext("terraform", map[string]interface{}{
 			"version": req.TerraformVersion,
 		})
+		scope.SetUser(sentry.User{
+			ID: getUserId(host, username),
+		})
 	})
 
 	tflog.Debug(ctx, "Creating Nginx Proxy Manager client")
 
 	npmClient, err := client.NewClient(&host, &username, &password)
 	if err != nil {
+		sentry.CaptureException(err)
 		resp.Diagnostics.AddError(
 			"Unable to Create Nginx Proxy Manager API Client",
 			"An unexpected error occurred when creating the Nginx Proxy Manager API client. "+

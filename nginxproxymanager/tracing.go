@@ -1,6 +1,7 @@
 package nginxproxymanager
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"github.com/getsentry/sentry-go"
 	"net/http"
@@ -30,4 +31,12 @@ func (t *tracingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 	res, err := t.inner.RoundTrip(req.WithContext(span.Context()))
 	return res, err
+}
+
+func getUserId(host string, username string) string {
+	h := sha256.New()
+	id := fmt.Sprintf("%s:%s", host, username)
+	h.Write([]byte(id))
+
+	return string(h.Sum(nil))
 }
