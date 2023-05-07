@@ -40,6 +40,7 @@ type nginxproxymanagerProviderModel struct {
 
 func (p *nginxproxymanagerProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "nginxproxymanager"
+	resp.Version = p.Version
 }
 
 func (p *nginxproxymanagerProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
