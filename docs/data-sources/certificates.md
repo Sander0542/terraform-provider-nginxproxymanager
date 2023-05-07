@@ -22,7 +22,7 @@ data "nginxproxymanager_certificates" "all" {}
 
 ### Read-Only
 
-- `certificates` (Attributes List) (see [below for nested schema](#nestedatt--certificates))
+- `certificates` (Attributes List) The certificates. (see [below for nested schema](#nestedatt--certificates))
 
 <a id="nestedatt--certificates"></a>
 ### Nested Schema for `certificates`

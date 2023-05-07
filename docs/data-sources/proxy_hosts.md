@@ -22,7 +22,7 @@ data "nginxproxymanager_proxy_hosts" "all" {}
 
 ### Read-Only
 
-- `proxy_hosts` (Attributes List) (see [below for nested schema](#nestedatt--proxy_hosts))
+- `proxy_hosts` (Attributes List) The proxy hosts. (see [below for nested schema](#nestedatt--proxy_hosts))
 
 <a id="nestedatt--proxy_hosts"></a>
 ### Nested Schema for `proxy_hosts`

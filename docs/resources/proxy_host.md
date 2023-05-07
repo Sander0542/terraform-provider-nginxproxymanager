@@ -27,11 +27,20 @@ resource "nginxproxymanager_proxy_hosts" "example" {
 
   access_list_id = 0 # Publicly Accessible
 
-  location {
+  locations {
     path           = "/admin"
     forward_scheme = "https"
     forward_host   = "example3.com"
     forward_port   = 443
+
+    advanced_config = ""
+  }
+
+  locations {
+    path           = "/contact"
+    forward_scheme = "http"
+    forward_host   = "example4.com"
+    forward_port   = 80
 
     advanced_config = ""
   }
@@ -67,7 +76,7 @@ resource "nginxproxymanager_proxy_hosts" "example" {
 - `hsts_enabled` (Boolean) Whether HSTS is enabled for the proxy host.
 - `hsts_subdomains` (Boolean) Whether HSTS is enabled for subdomains of the proxy host.
 - `http2_support` (Boolean) Whether HTTP/2 is supported for the proxy host.
-- `location` (Block List) The locations associated with the proxy host. (see [below for nested schema](#nestedblock--location))
+- `locations` (Block List) The locations associated with the proxy host. (see [below for nested schema](#nestedblock--locations))
 - `ssl_forced` (Boolean) Whether SSL is forced for the proxy host.
 
 ### Read-Only
@@ -79,8 +88,8 @@ resource "nginxproxymanager_proxy_hosts" "example" {
 - `modified_on` (String) The date and time the proxy host was last modified.
 - `owner_user_id` (Number) The ID of the user that owns the proxy host.
 
-<a id="nestedblock--location"></a>
-### Nested Schema for `location`
+<a id="nestedblock--locations"></a>
+### Nested Schema for `locations`
 
 Required:
 

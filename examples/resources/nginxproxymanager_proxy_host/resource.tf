@@ -12,11 +12,20 @@ resource "nginxproxymanager_proxy_hosts" "example" {
 
   access_list_id = 0 # Publicly Accessible
 
-  location {
+  locations {
     path           = "/admin"
     forward_scheme = "https"
     forward_host   = "example3.com"
     forward_port   = 443
+
+    advanced_config = ""
+  }
+
+  locations {
+    path           = "/contact"
+    forward_scheme = "http"
+    forward_host   = "example4.com"
+    forward_port   = 80
 
     advanced_config = ""
   }
