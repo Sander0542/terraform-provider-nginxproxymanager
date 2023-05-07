@@ -2,7 +2,6 @@ package nginxproxymanager
 
 import (
 	"context"
-	"github.com/getsentry/sentry-go"
 	attributes "github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/attributes/datasource"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/models"
 

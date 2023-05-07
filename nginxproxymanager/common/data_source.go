@@ -3,9 +3,8 @@ package common
 import (
 	"context"
 	"fmt"
-	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/sentry"
 )
 
 var (
@@ -29,12 +28,12 @@ func (d *DataSource) Metadata(_ context.Context, req datasource.MetadataRequest,
 
 func (d *DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	d.SchemaImpl(ctx, req, resp)
-	nginxproxymanager.Sentry(resp.Diagnostics)
+	sentry.CaptureDiagnostics(resp.Diagnostics)
 }
 
 func (d *DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	span := sentry.StartSpan(ctx, "terraform.data_source.read", sentry.TransactionName(fmt.Sprintf("data.%s.read", d.Name)))
+	span := sentry.StartDataSource(ctx, "read", d.Name)
 	defer span.Finish()
 	d.ReadImpl(span.Context(), req, resp)
-	nginxproxymanager.Sentry(resp.Diagnostics)
+	sentry.CaptureDiagnostics(resp.Diagnostics)
 }
