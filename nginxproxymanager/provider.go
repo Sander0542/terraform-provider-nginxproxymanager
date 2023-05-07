@@ -189,7 +189,7 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 
 	tflog.Debug(ctx, "Creating Nginx Proxy Manager client")
 
-	npmClient, err := client.NewClient(&host, &username, &password)
+	npmClient, err := client.NewClient(&host, &username, &password, p.Version)
 	if err != nil {
 		sentry.CaptureException(err)
 		resp.Diagnostics.AddError(

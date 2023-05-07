@@ -12,14 +12,16 @@ type Client struct {
 	HostURL    string
 	HTTPClient *http.Client
 	Token      string
+	UserAgent  string
 }
 
-func NewClient(host, username, password *string) (*Client, error) {
+func NewClient(host *string, username *string, password *string, version string) (*Client, error) {
 	c := Client{
 		HTTPClient: &http.Client{
 			Timeout:   10 * time.Second,
 			Transport: http.DefaultTransport,
 		},
+		UserAgent: fmt.Sprintf("terraform-provider-nginxproxymanager/%s", version),
 	}
 
 	if host != nil {
@@ -48,6 +50,7 @@ func (c *Client) doRequest(req *http.Request, authToken *string) ([]byte, error)
 	}
 
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	req.Header.Set("User-Agent", c.UserAgent)
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
