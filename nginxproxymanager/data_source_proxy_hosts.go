@@ -56,10 +56,6 @@ type proxyHostItem struct {
 	Locations             types.List   `tfsdk:"locations"`
 }
 
-func (d *proxyHostsDataSource) MetadataImpl(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_proxy_hosts"
-}
-
 func (d *proxyHostsDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Proxy Hosts data source",

@@ -12,7 +12,6 @@ var (
 )
 
 type IResource interface {
-	MetadataImpl(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse)
 	SchemaImpl(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse)
 	ReadImpl(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse)
 	CreateImpl(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse)
@@ -26,8 +25,8 @@ type Resource struct {
 	Name string
 }
 
-func (r *Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	r.MetadataImpl(ctx, req, resp)
+func (r *Resource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = fmt.Sprintf("%s_%s", req.ProviderTypeName, r.Name)
 }
 
 func (r *Resource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
