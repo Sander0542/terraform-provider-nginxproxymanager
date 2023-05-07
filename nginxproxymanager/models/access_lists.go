@@ -4,11 +4,9 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 type AccessLists struct {
-	common.IModel[models.AccessListResourceCollection]
 	AccessLists []AccessList `tfsdk:"access_lists"`
 }
 

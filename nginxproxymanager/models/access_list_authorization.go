@@ -2,15 +2,12 @@ package models
 
 import (
 	"context"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
-
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
 )
 
 type AccessListAuthorization struct {
-	common.IModel[models.AccessListAuthResource]
 	ID         types.Int64  `tfsdk:"id"`
 	CreatedOn  types.String `tfsdk:"created_on"`
 	ModifiedOn types.String `tfsdk:"modified_on"`

@@ -5,11 +5,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 type ProxyHost struct {
-	common.IModel[models.ProxyHostResource]
 	ID          types.Int64  `tfsdk:"id"`
 	CreatedOn   types.String `tfsdk:"created_on"`
 	ModifiedOn  types.String `tfsdk:"modified_on"`
