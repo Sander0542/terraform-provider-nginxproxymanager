@@ -40,7 +40,7 @@ func (r *proxyHostResource) SchemaImpl(_ context.Context, _ resource.SchemaReque
 		Description: "Manage a proxy host.",
 		Attributes:  attributes.ProxyHost,
 		Blocks: map[string]schema.Block{
-			"location": schema.ListNestedBlock{
+			"locations": schema.ListNestedBlock{
 				Description: "The locations associated with the proxy host.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: attributes.ProxyHostLocation,
