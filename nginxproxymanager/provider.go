@@ -210,6 +210,8 @@ func (p *nginxproxymanagerProvider) Configure(ctx context.Context, req provider.
 
 func (p *nginxproxymanagerProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		NewAccessListsDataSource,
+		NewAccessListDataSource,
 		NewCertificatesDataSource,
 		NewCertificateDataSource,
 		NewProxyHostDataSource,
