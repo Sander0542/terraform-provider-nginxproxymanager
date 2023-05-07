@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager"
 )
 
 var (
@@ -28,10 +29,12 @@ func (d *DataSource) Metadata(_ context.Context, req datasource.MetadataRequest,
 
 func (d *DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	d.SchemaImpl(ctx, req, resp)
+	nginxproxymanager.Sentry(resp.Diagnostics)
 }
 
 func (d *DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	span := sentry.StartSpan(ctx, "terraform.data_source.read", sentry.TransactionName(fmt.Sprintf("data.%s.read", d.Name)))
 	defer span.Finish()
 	d.ReadImpl(span.Context(), req, resp)
+	nginxproxymanager.Sentry(resp.Diagnostics)
 }

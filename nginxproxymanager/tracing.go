@@ -1,10 +1,11 @@
 package nginxproxymanager
 
 import (
+	"errors"
 	"fmt"
-	"net/http"
-
 	"github.com/getsentry/sentry-go"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"net/http"
 )
 
 type tracingTransport struct {
@@ -31,4 +32,13 @@ func (t *tracingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 	res, err := t.inner.RoundTrip(req.WithContext(span.Context()))
 	return res, err
+}
+
+func Sentry(diags diag.Diagnostics) {
+	for _, err := range diags.Errors() {
+		sentry.CaptureException(errors.New(err.Detail()))
+	}
+	for _, warn := range diags.Warnings() {
+		sentry.CaptureMessage(warn.Detail())
+	}
 }
