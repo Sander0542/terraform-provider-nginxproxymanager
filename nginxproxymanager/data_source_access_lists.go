@@ -58,8 +58,7 @@ func (d *accessListsDataSource) ReadImpl(ctx context.Context, _ datasource.ReadR
 		resp.Diagnostics.Append(data.AccessLists[i].Load(ctx, &v)...)
 	}
 
-	diags := resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}

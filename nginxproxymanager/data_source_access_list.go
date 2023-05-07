@@ -48,8 +48,7 @@ func (d *accessListDataSource) Configure(_ context.Context, req datasource.Confi
 func (d *accessListDataSource) ReadImpl(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data models.AccessList
 
-	diags := req.Config.Get(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	accessList, err := d.client.GetAccessList(ctx, data.ID.ValueInt64Pointer())
 	if err != nil {
@@ -66,8 +65,7 @@ func (d *accessListDataSource) ReadImpl(ctx context.Context, req datasource.Read
 
 	resp.Diagnostics.Append(data.Load(ctx, accessList)...)
 
-	diags = resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
