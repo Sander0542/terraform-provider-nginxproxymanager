@@ -33,5 +33,5 @@ func (d *DataSource) Schema(ctx context.Context, req datasource.SchemaRequest, r
 func (d *DataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	span := sentry.StartSpan(ctx, "terraform.data_source.read", sentry.TransactionName(fmt.Sprintf("data.%s.read", d.Name)))
 	defer span.Finish()
-	d.ReadImpl(ctx, req, resp)
+	d.ReadImpl(span.Context(), req, resp)
 }
