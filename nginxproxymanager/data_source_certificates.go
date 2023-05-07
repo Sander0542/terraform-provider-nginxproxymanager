@@ -3,10 +3,11 @@ package nginxproxymanager
 import (
 	"context"
 	"github.com/getsentry/sentry-go"
+	attributes "github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/attributes/datasource"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/models"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
@@ -28,71 +29,10 @@ type certificatesDataSource struct {
 	client *client.Client
 }
 
-type certificatesDataSourceModel struct {
-	Certificates []certificateItem `tfsdk:"certificates"`
-}
-
-type certificateItem struct {
-	ID          types.Int64  `tfsdk:"id"`
-	CreatedOn   types.String `tfsdk:"created_on"`
-	ModifiedOn  types.String `tfsdk:"modified_on"`
-	Provider    types.String `tfsdk:"provider_name"`
-	NiceName    types.String `tfsdk:"nice_name"`
-	DomainNames types.List   `tfsdk:"domain_names"`
-	ExpiresOn   types.String `tfsdk:"expires_on"`
-	Meta        types.Map    `tfsdk:"meta"`
-}
-
-func (d *certificatesDataSource) MetadataImpl(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_certificates"
-}
-
 func (d *certificatesDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Certificates data source",
-		Attributes: map[string]schema.Attribute{
-			"certificates": schema.ListNestedAttribute{
-				Computed: true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"id": schema.Int64Attribute{
-							Description: "The ID of the certificate.",
-							Computed:    true,
-						},
-						"created_on": schema.StringAttribute{
-							Description: "The date and time the certificate was created.",
-							Computed:    true,
-						},
-						"modified_on": schema.StringAttribute{
-							Description: "The date and time the certificate was last modified.",
-							Computed:    true,
-						},
-						"provider_name": schema.StringAttribute{
-							Description: "The provider of the certificate.",
-							Computed:    true,
-						},
-						"nice_name": schema.StringAttribute{
-							Description: "The nice name of the certificate.",
-							Computed:    true,
-						},
-						"domain_names": schema.ListAttribute{
-							Description: "The domain names associated with the certificate.",
-							Computed:    true,
-							ElementType: types.StringType,
-						},
-						"expires_on": schema.StringAttribute{
-							Description: "The date and time the certificate expires.",
-							Computed:    true,
-						},
-						"meta": schema.MapAttribute{
-							Description: "The meta data associated with the certificate.",
-							ElementType: types.StringType,
-							Computed:    true,
-						},
-					},
-				},
-			},
-		},
+		Attributes:  attributes.Certificates,
 	}
 }
 
@@ -104,9 +44,7 @@ func (d *certificatesDataSource) Configure(_ context.Context, req datasource.Con
 	d.client = req.ProviderData.(*client.Client)
 }
 
-func (d *certificatesDataSource) ReadImpl(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var data certificatesDataSourceModel
-
+func (d *certificatesDataSource) ReadImpl(ctx context.Context, _ datasource.ReadRequest, resp *datasource.ReadResponse) {
 	certificates, err := d.client.GetCertificates(ctx)
 	if err != nil {
 		sentry.CaptureException(err)
@@ -114,27 +52,13 @@ func (d *certificatesDataSource) ReadImpl(ctx context.Context, req datasource.Re
 		return
 	}
 
-	for _, value := range *certificates {
-		domainNames, diags := types.ListValueFrom(ctx, types.StringType, value.DomainNames)
-		resp.Diagnostics.Append(diags...)
-		meta, diags := types.MapValueFrom(ctx, types.StringType, value.Meta.Map())
-		resp.Diagnostics.Append(diags...)
-
-		certificate := certificateItem{
-			ID:          types.Int64Value(value.ID),
-			CreatedOn:   types.StringValue(value.CreatedOn),
-			ModifiedOn:  types.StringValue(value.ModifiedOn),
-			Provider:    types.StringValue(value.Provider),
-			NiceName:    types.StringValue(value.NiceName),
-			DomainNames: domainNames,
-			ExpiresOn:   types.StringValue(value.ExpiresOn),
-			Meta:        meta,
-		}
-		data.Certificates = append(data.Certificates, certificate)
+	var data models.Certificates
+	data.Certificates = make([]models.Certificate, len(*certificates))
+	for i, v := range *certificates {
+		resp.Diagnostics.Append(data.Certificates[i].Load(ctx, &v)...)
 	}
 
-	diags := resp.State.Set(ctx, &data)
-	resp.Diagnostics.Append(diags...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
