@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/models"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client"
@@ -52,7 +51,6 @@ func (d *accessListDataSource) ReadImpl(ctx context.Context, req datasource.Read
 
 	accessList, err := d.client.GetAccessList(ctx, data.ID.ValueInt64Pointer())
 	if err != nil {
-		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error reading access list", "Could not read access list, unexpected error: "+err.Error())
 		return
 	}

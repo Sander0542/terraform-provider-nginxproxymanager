@@ -47,7 +47,6 @@ func (d *certificatesDataSource) Configure(_ context.Context, req datasource.Con
 func (d *certificatesDataSource) ReadImpl(ctx context.Context, _ datasource.ReadRequest, resp *datasource.ReadResponse) {
 	certificates, err := d.client.GetCertificates(ctx)
 	if err != nil {
-		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error reading certificate", "Could not read certificate, unexpected error: "+err.Error())
 		return
 	}

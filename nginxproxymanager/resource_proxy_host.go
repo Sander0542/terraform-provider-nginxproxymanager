@@ -7,7 +7,6 @@ import (
 	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/models"
 	"strconv"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -99,7 +98,6 @@ func (r *proxyHostResource) CreateImpl(ctx context.Context, req resource.CreateR
 
 	proxyHost, err := r.client.CreateProxyHost(ctx, &item)
 	if err != nil {
-		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error creating proxy host", "Could not create proxy host, unexpected error: "+err.Error())
 		return
 	}
@@ -121,7 +119,6 @@ func (r *proxyHostResource) ReadImpl(ctx context.Context, req resource.ReadReque
 
 	proxyHost, err := r.client.GetProxyHost(ctx, state.ID.ValueInt64Pointer())
 	if err != nil {
-		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error reading proxy host", "Could not read proxy host, unexpected error: "+err.Error())
 		return
 	}
@@ -178,7 +175,6 @@ func (r *proxyHostResource) UpdateImpl(ctx context.Context, req resource.UpdateR
 
 	proxyHost, err := r.client.UpdateProxyHost(ctx, plan.ID.ValueInt64Pointer(), &item)
 	if err != nil {
-		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error updating proxy host", "Could not update proxy host, unexpected error: "+err.Error())
 		return
 	}
@@ -200,7 +196,6 @@ func (r *proxyHostResource) DeleteImpl(ctx context.Context, req resource.DeleteR
 
 	err := r.client.DeleteProxyHost(ctx, state.ID.ValueInt64Pointer())
 	if err != nil {
-		sentry.CaptureException(err)
 		resp.Diagnostics.AddError("Error deleting proxy host", "Could not delete proxy host, unexpected error: "+err.Error())
 		return
 	}
