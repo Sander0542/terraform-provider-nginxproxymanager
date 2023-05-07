@@ -5,9 +5,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 )
 
 type Certificate struct {
+	common.IModel[models.CertificateResource]
 	ID         types.Int64  `tfsdk:"id"`
 	CreatedOn  types.String `tfsdk:"created_on"`
 	ModifiedOn types.String `tfsdk:"modified_on"`
@@ -22,7 +24,6 @@ type Certificate struct {
 func (m *Certificate) Load(ctx context.Context, resource *models.CertificateResource) diag.Diagnostics {
 	meta, diags := types.MapValueFrom(ctx, types.StringType, resource.Meta.Map())
 	domainNames, diags2 := types.ListValueFrom(ctx, types.StringType, resource.DomainNames)
-
 	diags.Append(diags2...)
 
 	m.ID = types.Int64Value(resource.ID)

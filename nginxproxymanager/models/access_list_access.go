@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/common"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -9,6 +10,7 @@ import (
 )
 
 type AccessListAccess struct {
+	common.IModel[models.AccessListClientResource]
 	ID         types.Int64  `tfsdk:"id"`
 	CreatedOn  types.String `tfsdk:"created_on"`
 	ModifiedOn types.String `tfsdk:"modified_on"`

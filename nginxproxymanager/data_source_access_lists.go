@@ -53,10 +53,7 @@ func (d *accessListsDataSource) ReadImpl(ctx context.Context, _ datasource.ReadR
 	}
 
 	var data models.AccessLists
-	data.AccessLists = make([]models.AccessList, len(*accessLists))
-	for i, v := range *accessLists {
-		resp.Diagnostics.Append(data.AccessLists[i].Load(ctx, &v)...)
-	}
+	resp.Diagnostics.Append(data.Load(ctx, accessLists)...)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 	if resp.Diagnostics.HasError() {

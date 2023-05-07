@@ -53,10 +53,7 @@ func (d *certificatesDataSource) ReadImpl(ctx context.Context, _ datasource.Read
 	}
 
 	var data models.Certificates
-	data.Certificates = make([]models.Certificate, len(*certificates))
-	for i, v := range *certificates {
-		resp.Diagnostics.Append(data.Certificates[i].Load(ctx, &v)...)
-	}
+	resp.Diagnostics.Append(data.Load(ctx, certificates)...)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
