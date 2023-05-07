@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *models.ProxyHostCreate) (*models.ProxyHostResponse, error) {
+func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *models.ProxyHostCreate) (*models.ProxyHostResource, error) {
 	rb, err := json.Marshal(proxyHost)
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *models.ProxyHos
 		return nil, err
 	}
 
-	ar := models.ProxyHostResponse{}
+	ar := models.ProxyHostResource{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *models.ProxyHos
 	return &ar, nil
 }
 
-func (c *Client) GetProxyHosts(ctx context.Context) (*models.ProxyHostsResponse, error) {
+func (c *Client) GetProxyHosts(ctx context.Context) (*models.ProxyHostResourceCollection, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/proxy-hosts", c.HostURL), nil)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (c *Client) GetProxyHosts(ctx context.Context) (*models.ProxyHostsResponse,
 		return nil, err
 	}
 
-	ar := models.ProxyHostsResponse{}
+	ar := models.ProxyHostResourceCollection{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (c *Client) GetProxyHosts(ctx context.Context) (*models.ProxyHostsResponse,
 	return &ar, nil
 }
 
-func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*models.ProxyHostResponse, error) {
+func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*models.ProxyHostResource, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), nil)
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*models.ProxyHost
 		return nil, err
 	}
 
-	ar := models.ProxyHostResponse{}
+	ar := models.ProxyHostResource{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*models.ProxyHost
 	return &ar, nil
 }
 
-func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *models.ProxyHostUpdate) (*models.ProxyHostResponse, error) {
+func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *models.ProxyHostUpdate) (*models.ProxyHostResource, error) {
 	rb, err := json.Marshal(proxyHost)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *mode
 		return nil, err
 	}
 
-	ar := models.ProxyHostResponse{}
+	ar := models.ProxyHostResource{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
