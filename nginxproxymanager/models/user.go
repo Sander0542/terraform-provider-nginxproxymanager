@@ -13,13 +13,13 @@ type User struct {
 	ModifiedOn types.String `tfsdk:"modified_on"`
 	Meta       types.Map    `tfsdk:"meta"`
 
-	Name        types.String    `tfsdk:"name"`
-	Nickname    types.String    `tfsdk:"nickname"`
-	Email       types.String    `tfsdk:"email"`
-	Avatar      types.String    `tfsdk:"avatar"`
-	IsDisabled  types.Bool      `tfsdk:"is_disabled"`
-	Roles       []types.String  `tfsdk:"roles"`
-	Permissions UserPermissions `tfsdk:"permissions"`
+	Name        types.String     `tfsdk:"name"`
+	Nickname    types.String     `tfsdk:"nickname"`
+	Email       types.String     `tfsdk:"email"`
+	Avatar      types.String     `tfsdk:"avatar"`
+	IsDisabled  types.Bool       `tfsdk:"is_disabled"`
+	Roles       []types.String   `tfsdk:"roles"`
+	Permissions *UserPermissions `tfsdk:"permissions"`
 }
 
 func (m *User) Load(ctx context.Context, resource *resources.User) diag.Diagnostics {
@@ -41,6 +41,7 @@ func (m *User) Load(ctx context.Context, resource *resources.User) diag.Diagnost
 		m.Roles[i] = types.StringValue(v)
 	}
 
+	m.Permissions = &UserPermissions{}
 	diags.Append(m.Permissions.Load(ctx, &resource.Permissions)...)
 
 	return diags
