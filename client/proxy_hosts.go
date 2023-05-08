@@ -81,7 +81,7 @@ func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*resources.ProxyH
 	return &ar, nil
 }
 
-func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *inputs.ProxyHostUpdate) (*resources.ProxyHost, error) {
+func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *inputs.ProxyHost) (*resources.ProxyHost, error) {
 	rb, err := json.Marshal(proxyHost)
 	if err != nil {
 		return nil, err
