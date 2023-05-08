@@ -1,6 +1,6 @@
-package models
+package inputs
 
-type ProxyHostLocationResource struct {
+type ProxyHostLocation struct {
 	Path           string `json:"path"`
 	ForwardScheme  string `json:"forward_scheme"`
 	ForwardHost    string `json:"forward_host"`
@@ -8,4 +8,4 @@ type ProxyHostLocationResource struct {
 	AdvancedConfig string `json:"advanced_config"`
 }
 
-type ProxyHostLocationResourceCollection []ProxyHostLocationResource
+type ProxyHostLocationCollection []ProxyHostLocation

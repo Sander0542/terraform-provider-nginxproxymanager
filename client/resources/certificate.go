@@ -1,6 +1,6 @@
-package models
+package resources
 
-type CertificateResource struct {
+type Certificate struct {
 	resource
 	Provider    string   `json:"provider"`
 	NiceName    string   `json:"nice_name"`
@@ -8,4 +8,4 @@ type CertificateResource struct {
 	ExpiresOn   string   `json:"expires_on"`
 }
 
-type CertificateResourceCollection []CertificateResource
+type CertificateCollection []Certificate

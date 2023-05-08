@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 )
 
-func (c *Client) GetAccessLists(ctx context.Context) (*models.AccessListResourceCollection, error) {
+func (c *Client) GetAccessLists(ctx context.Context) (*resources.AccessListCollection, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/access-lists?expand=items,clients", c.HostURL), nil)
 	if err != nil {
 		return nil, err
@@ -20,7 +20,7 @@ func (c *Client) GetAccessLists(ctx context.Context) (*models.AccessListResource
 		return nil, err
 	}
 
-	ar := models.AccessListResourceCollection{}
+	ar := resources.AccessListCollection{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (c *Client) GetAccessLists(ctx context.Context) (*models.AccessListResource
 	return &ar, nil
 }
 
-func (c *Client) GetAccessList(ctx context.Context, id *int64) (*models.AccessListResource, error) {
+func (c *Client) GetAccessList(ctx context.Context, id *int64) (*resources.AccessList, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/access-lists/%d?expand=items,clients", c.HostURL, *id), nil)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (c *Client) GetAccessList(ctx context.Context, id *int64) (*models.AccessLi
 		return nil, err
 	}
 
-	ar := models.AccessListResource{}
+	ar := resources.AccessList{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err

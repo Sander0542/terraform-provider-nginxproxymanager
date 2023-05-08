@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 )
 
 type AccessListAuthorization struct {
@@ -17,7 +17,7 @@ type AccessListAuthorization struct {
 	PasswordHint types.String `tfsdk:"password_hint"`
 }
 
-func (m *AccessListAuthorization) Load(ctx context.Context, resource *models.AccessListAuthResource) diag.Diagnostics {
+func (m *AccessListAuthorization) Load(ctx context.Context, resource *resources.AccessListAuth) diag.Diagnostics {
 	meta, diags := types.MapValueFrom(ctx, types.StringType, resource.Meta.Map())
 
 	m.ID = types.Int64Value(resource.ID)

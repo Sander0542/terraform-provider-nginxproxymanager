@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 	"net/http"
 )
 
-func (c *Client) GetCertificates(ctx context.Context) (*models.CertificateResourceCollection, error) {
+func (c *Client) GetCertificates(ctx context.Context) (*resources.CertificateCollection, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/certificates", c.HostURL), nil)
 	if err != nil {
 		return nil, err
@@ -19,7 +19,7 @@ func (c *Client) GetCertificates(ctx context.Context) (*models.CertificateResour
 		return nil, err
 	}
 
-	ar := models.CertificateResourceCollection{}
+	ar := resources.CertificateCollection{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (c *Client) GetCertificates(ctx context.Context) (*models.CertificateResour
 	return &ar, nil
 }
 
-func (c *Client) GetCertificate(ctx context.Context, id *int64) (*models.CertificateResource, error) {
+func (c *Client) GetCertificate(ctx context.Context, id *int64) (*resources.Certificate, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/certificates/%d", c.HostURL, *id), nil)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (c *Client) GetCertificate(ctx context.Context, id *int64) (*models.Certifi
 		return nil, err
 	}
 
-	ar := models.CertificateResource{}
+	ar := resources.Certificate{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err

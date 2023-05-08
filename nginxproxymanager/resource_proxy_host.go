@@ -2,7 +2,7 @@ package nginxproxymanager
 
 import (
 	"context"
-	models2 "github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/inputs"
 	attributes "github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/attributes/resources"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/nginxproxymanager/models"
 	"strconv"
@@ -65,36 +65,8 @@ func (r *proxyHostResource) CreateImpl(ctx context.Context, req resource.CreateR
 		return
 	}
 
-	var item models2.ProxyHostCreate
-
-	item.DomainNames = []string{}
-	for _, domainName := range plan.DomainNames {
-		item.DomainNames = append(item.DomainNames, domainName.ValueString())
-	}
-	item.ForwardScheme = plan.ForwardScheme.ValueString()
-	item.ForwardHost = plan.ForwardHost.ValueString()
-	item.ForwardPort = uint16(plan.ForwardPort.ValueInt64())
-	item.CertificateID = plan.CertificateID.ValueString()
-	item.SSLForced = plan.SSLForced.ValueBool()
-	item.HSTSEnabled = plan.HSTSEnabled.ValueBool()
-	item.HSTSSubdomains = plan.HSTSSubdomains.ValueBool()
-	item.HTTP2Support = plan.HTTP2Support.ValueBool()
-	item.BlockExploits = plan.BlockExploits.ValueBool()
-	item.CachingEnabled = plan.CachingEnabled.ValueBool()
-	item.AllowWebsocketUpgrade = plan.AllowWebsocketUpgrade.ValueBool()
-	item.AccessListID = plan.AccessListID.ValueInt64()
-	item.AdvancedConfig = plan.AdvancedConfig.ValueString()
-	item.Meta = map[string]string{}
-	item.Locations = []models2.ProxyHostLocationResource{}
-	for _, location := range plan.Locations {
-		item.Locations = append(item.Locations, models2.ProxyHostLocationResource{
-			Path:           location.Path.ValueString(),
-			ForwardScheme:  location.ForwardScheme.ValueString(),
-			ForwardHost:    location.ForwardHost.ValueString(),
-			ForwardPort:    uint16(location.ForwardPort.ValueInt64()),
-			AdvancedConfig: location.AdvancedConfig.ValueString(),
-		})
-	}
+	var item inputs.ProxyHost
+	diags.Append(plan.Save(ctx, &item)...)
 
 	proxyHost, err := r.client.CreateProxyHost(ctx, &item)
 	if err != nil {
@@ -142,36 +114,8 @@ func (r *proxyHostResource) UpdateImpl(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	var item models2.ProxyHostUpdate
-
-	item.DomainNames = []string{}
-	for _, domainName := range plan.DomainNames {
-		item.DomainNames = append(item.DomainNames, domainName.ValueString())
-	}
-	item.ForwardScheme = plan.ForwardScheme.ValueString()
-	item.ForwardHost = plan.ForwardHost.ValueString()
-	item.ForwardPort = uint16(plan.ForwardPort.ValueInt64())
-	item.CertificateID = plan.CertificateID.ValueString()
-	item.SSLForced = plan.SSLForced.ValueBool()
-	item.HSTSEnabled = plan.HSTSEnabled.ValueBool()
-	item.HSTSSubdomains = plan.HSTSSubdomains.ValueBool()
-	item.HTTP2Support = plan.HTTP2Support.ValueBool()
-	item.BlockExploits = plan.BlockExploits.ValueBool()
-	item.CachingEnabled = plan.CachingEnabled.ValueBool()
-	item.AllowWebsocketUpgrade = plan.AllowWebsocketUpgrade.ValueBool()
-	item.AccessListID = plan.AccessListID.ValueInt64()
-	item.AdvancedConfig = plan.AdvancedConfig.ValueString()
-	item.Meta = map[string]string{}
-	item.Locations = []models2.ProxyHostLocationResource{}
-	for _, location := range plan.Locations {
-		item.Locations = append(item.Locations, models2.ProxyHostLocationResource{
-			Path:           location.Path.ValueString(),
-			ForwardScheme:  location.ForwardScheme.ValueString(),
-			ForwardHost:    location.ForwardHost.ValueString(),
-			ForwardPort:    uint16(location.ForwardPort.ValueInt64()),
-			AdvancedConfig: location.AdvancedConfig.ValueString(),
-		})
-	}
+	var item inputs.ProxyHost
+	diags.Append(plan.Save(ctx, &item)...)
 
 	proxyHost, err := r.client.UpdateProxyHost(ctx, plan.ID.ValueInt64Pointer(), &item)
 	if err != nil {

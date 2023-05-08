@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 )
 
 type AccessListAccess struct {
@@ -17,7 +17,7 @@ type AccessListAccess struct {
 	Directive types.String `tfsdk:"directive"`
 }
 
-func (m *AccessListAccess) Load(ctx context.Context, resource *models.AccessListClientResource) diag.Diagnostics {
+func (m *AccessListAccess) Load(ctx context.Context, resource *resources.AccessListClient) diag.Diagnostics {
 	meta, diags := types.MapValueFrom(ctx, types.StringType, resource.Meta.Map())
 
 	m.ID = types.Int64Value(resource.ID)

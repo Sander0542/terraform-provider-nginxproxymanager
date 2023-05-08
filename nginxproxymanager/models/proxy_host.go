@@ -4,7 +4,8 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/inputs"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 )
 
 type ProxyHost struct {
@@ -32,7 +33,7 @@ type ProxyHost struct {
 	Locations             []ProxyHostLocation `tfsdk:"locations"`
 }
 
-func (m *ProxyHost) Load(ctx context.Context, resource *models.ProxyHostResource) diag.Diagnostics {
+func (m *ProxyHost) Load(ctx context.Context, resource *resources.ProxyHost) diag.Diagnostics {
 	meta, diags := types.MapValueFrom(ctx, types.StringType, resource.Meta.Map())
 
 	m.ID = types.Int64Value(resource.ID)
@@ -63,6 +64,36 @@ func (m *ProxyHost) Load(ctx context.Context, resource *models.ProxyHostResource
 	m.Locations = make([]ProxyHostLocation, len(resource.Locations))
 	for i, v := range resource.Locations {
 		diags.Append(m.Locations[i].Load(ctx, &v)...)
+	}
+
+	return diags
+}
+
+func (m *ProxyHost) Save(ctx context.Context, input *inputs.ProxyHost) diag.Diagnostics {
+	diags := diag.Diagnostics{}
+
+	input.ForwardScheme = m.ForwardScheme.ValueString()
+	input.ForwardHost = m.ForwardHost.ValueString()
+	input.ForwardPort = uint16(m.ForwardPort.ValueInt64())
+	input.CertificateID = m.CertificateID.ValueString()
+	input.SSLForced = m.SSLForced.ValueBool()
+	input.HSTSEnabled = m.HSTSEnabled.ValueBool()
+	input.HSTSSubdomains = m.HSTSSubdomains.ValueBool()
+	input.HTTP2Support = m.HTTP2Support.ValueBool()
+	input.BlockExploits = m.BlockExploits.ValueBool()
+	input.CachingEnabled = m.CachingEnabled.ValueBool()
+	input.AllowWebsocketUpgrade = m.AllowWebsocketUpgrade.ValueBool()
+	input.AccessListID = m.AccessListID.ValueInt64()
+	input.AdvancedConfig = m.AdvancedConfig.ValueString()
+	input.Meta = map[string]string{}
+
+	input.DomainNames = make([]string, len(m.DomainNames))
+	for i, v := range m.DomainNames {
+		input.DomainNames[i] = v.ValueString()
+	}
+	input.Locations = make([]inputs.ProxyHostLocation, len(m.Locations))
+	for i, v := range m.Locations {
+		diags.Append(v.Save(ctx, &input.Locations[i])...)
 	}
 
 	return diags

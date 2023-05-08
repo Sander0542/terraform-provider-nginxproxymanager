@@ -1,4 +1,4 @@
-package models
+package resources
 
 import (
 	"encoding/json"

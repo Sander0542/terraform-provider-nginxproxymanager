@@ -1,6 +1,6 @@
-package models
+package resources
 
-type AccessListAuthResource struct {
+type AccessListAuth struct {
 	resource
 	AccessListId int64  `json:"access_list_id"`
 	Hint         string `json:"hint"`
@@ -8,4 +8,4 @@ type AccessListAuthResource struct {
 	Password     string `json:"password"`
 }
 
-type AccessListAuthResourceCollection []AccessListAuthResource
+type AccessListAuthCollection []AccessListAuth

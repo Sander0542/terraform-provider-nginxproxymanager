@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client/models"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/inputs"
+	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 	"net/http"
 	"strings"
 )
 
-func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *models.ProxyHostCreate) (*models.ProxyHostResource, error) {
+func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *inputs.ProxyHost) (*resources.ProxyHost, error) {
 	rb, err := json.Marshal(proxyHost)
 	if err != nil {
 		return nil, err
@@ -27,7 +28,7 @@ func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *models.ProxyHos
 		return nil, err
 	}
 
-	ar := models.ProxyHostResource{}
+	ar := resources.ProxyHost{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
@@ -36,7 +37,7 @@ func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *models.ProxyHos
 	return &ar, nil
 }
 
-func (c *Client) GetProxyHosts(ctx context.Context) (*models.ProxyHostResourceCollection, error) {
+func (c *Client) GetProxyHosts(ctx context.Context) (*resources.ProxyHostCollection, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/proxy-hosts", c.HostURL), nil)
 	if err != nil {
 		return nil, err
@@ -47,7 +48,7 @@ func (c *Client) GetProxyHosts(ctx context.Context) (*models.ProxyHostResourceCo
 		return nil, err
 	}
 
-	ar := models.ProxyHostResourceCollection{}
+	ar := resources.ProxyHostCollection{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
@@ -56,7 +57,7 @@ func (c *Client) GetProxyHosts(ctx context.Context) (*models.ProxyHostResourceCo
 	return &ar, nil
 }
 
-func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*models.ProxyHostResource, error) {
+func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*resources.ProxyHost, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), nil)
 	if err != nil {
 		return nil, err
@@ -67,7 +68,7 @@ func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*models.ProxyHost
 		return nil, err
 	}
 
-	ar := models.ProxyHostResource{}
+	ar := resources.ProxyHost{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err
@@ -80,7 +81,7 @@ func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*models.ProxyHost
 	return &ar, nil
 }
 
-func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *models.ProxyHostUpdate) (*models.ProxyHostResource, error) {
+func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *inputs.ProxyHostUpdate) (*resources.ProxyHost, error) {
 	rb, err := json.Marshal(proxyHost)
 	if err != nil {
 		return nil, err
@@ -98,7 +99,7 @@ func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *mode
 		return nil, err
 	}
 
-	ar := models.ProxyHostResource{}
+	ar := resources.ProxyHost{}
 	err = json.Unmarshal(body, &ar)
 	if err != nil {
 		return nil, err

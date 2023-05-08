@@ -1,10 +1,10 @@
-package models
+package resources
 
-type AccessListClientResource struct {
+type AccessListClient struct {
 	resource
 	AccessListId int64  `json:"access_list_id"`
 	Address      string `json:"address"`
 	Directive    string `json:"directive"`
 }
 
-type AccessListClientResourceCollection []AccessListClientResource
+type AccessListClientCollection []AccessListClient
