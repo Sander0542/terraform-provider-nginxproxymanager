@@ -11,7 +11,7 @@ import (
 )
 
 func (c *Client) GetUsers(ctx context.Context) (*resources.UserCollection, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/users?expand=items,clients", c.HostURL), nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/users?expand=permissions", c.HostURL), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (c *Client) GetMe(ctx context.Context) (*resources.User, error) {
 }
 
 func (c *Client) getUser(ctx context.Context, resource string) (*resources.User, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/users/%d?expand=items,clients", c.HostURL, resource), nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/users/%s?expand=permissions", c.HostURL, resource), nil)
 	if err != nil {
 		return nil, err
 	}
