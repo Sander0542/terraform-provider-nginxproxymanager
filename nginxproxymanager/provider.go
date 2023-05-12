@@ -219,6 +219,7 @@ func (p *nginxproxymanagerProvider) DataSources(_ context.Context) []func() data
 		NewAccessListDataSource,
 		NewCertificatesDataSource,
 		NewCertificateDataSource,
+		NewDeadHostDataSource,
 		NewProxyHostDataSource,
 		NewProxyHostsDataSource,
 		NewRedirectionHostDataSource,
