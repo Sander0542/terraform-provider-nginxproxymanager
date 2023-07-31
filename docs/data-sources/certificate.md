@@ -35,5 +35,3 @@ data "nginxproxymanager_certificate" "certificate" {
 - `modified_on` (String) The date and time the certificate was last modified.
 - `nice_name` (String) The nice name of the certificate.
 - `provider_name` (String) The provider of the certificate.
-
-

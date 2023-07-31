@@ -64,5 +64,3 @@ Read-Only:
 - `modified_on` (String) The date and time the authorization item was last modified.
 - `password_hint` (String, Sensitive) The password hint of the authorization item.
 - `username` (String) The username of the authorization item.
-
-

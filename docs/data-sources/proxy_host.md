@@ -59,5 +59,3 @@ Read-Only:
 - `forward_port` (Number) The port used to forward requests to the location.
 - `forward_scheme` (String) The scheme used to forward requests to the location. Can be either `http` or `https`.
 - `path` (String) The path associated with the location.
-
-

@@ -45,5 +45,3 @@ data "nginxproxymanager_redirection_host" "redirection_host" {
 - `owner_user_id` (Number) The ID of the user that owns the redirection host.
 - `preserve_path` (Boolean) Whether the path is preserved for the redirection host.
 - `ssl_forced` (Boolean) Whether SSL is forced for the redirection host.
-
-

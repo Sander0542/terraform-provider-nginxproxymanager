@@ -40,5 +40,3 @@ Read-Only:
 - `owner_user_id` (Number) The ID of the user that owns the stream.
 - `tcp_forwarding` (Boolean) Whether TCP forwarding is enabled.
 - `udp_forwarding` (Boolean) Whether UDP forwarding is enabled.
-
-

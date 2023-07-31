@@ -46,5 +46,3 @@ Read-Only:
 - `redirection_hosts` (String) The permission value for the redirection hosts.
 - `streams` (String) The permission value for the streams.
 - `visibility` (String) The level of visibility for the user.
-
-
