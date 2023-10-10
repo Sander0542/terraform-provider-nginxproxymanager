@@ -10,7 +10,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"os"
 	"strings"
 )
 
@@ -110,30 +109,20 @@ func (c *Client) ValidateCertificate(ctx context.Context, certificate *inputs.Ce
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
 
-	certFile, err := os.Open(certificate.Certificate)
-	if err != nil {
-		return nil, err
-	}
-	defer certFile.Close()
 	certPart, err := writer.CreateFormFile("certificate", "certificate.crt")
 	if err != nil {
 		return nil, err
 	}
-	_, err = io.Copy(certPart, certFile)
+	_, err = io.Copy(certPart, strings.NewReader(certificate.Certificate))
 	if err != nil {
 		return nil, err
 	}
 
-	keyFile, err := os.Open(certificate.CertificateKey)
-	if err != nil {
-		return nil, err
-	}
-	defer keyFile.Close()
 	keyPart, err := writer.CreateFormFile("certificate_key", "certificate.key")
 	if err != nil {
 		return nil, err
 	}
-	_, err = io.Copy(keyPart, keyFile)
+	_, err = io.Copy(keyPart, strings.NewReader(certificate.CertificateKey))
 	if err != nil {
 		return nil, err
 	}
@@ -166,30 +155,20 @@ func (c *Client) UploadCertificate(ctx context.Context, certificate *inputs.Cert
 	payload := &bytes.Buffer{}
 	writer := multipart.NewWriter(payload)
 
-	certFile, err := os.Open(certificate.Certificate)
-	if err != nil {
-		return nil, err
-	}
-	defer certFile.Close()
 	certPart, err := writer.CreateFormFile("certificate", "certificate.crt")
 	if err != nil {
 		return nil, err
 	}
-	_, err = io.Copy(certPart, certFile)
+	_, err = io.Copy(certPart, strings.NewReader(certificate.Certificate))
 	if err != nil {
 		return nil, err
 	}
 
-	keyFile, err := os.Open(certificate.CertificateKey)
-	if err != nil {
-		return nil, err
-	}
-	defer keyFile.Close()
 	keyPart, err := writer.CreateFormFile("certificate_key", "certificate.key")
 	if err != nil {
 		return nil, err
 	}
-	_, err = io.Copy(keyPart, keyFile)
+	_, err = io.Copy(keyPart, strings.NewReader(certificate.CertificateKey))
 	if err != nil {
 		return nil, err
 	}
