@@ -15,22 +15,22 @@ type ProxyHost struct {
 	OwnerUserId types.Int64  `tfsdk:"owner_user_id"`
 	Meta        types.Map    `tfsdk:"meta"`
 
-	DomainNames           []types.String      `tfsdk:"domain_names"`
-	ForwardScheme         types.String        `tfsdk:"forward_scheme"`
-	ForwardHost           types.String        `tfsdk:"forward_host"`
-	ForwardPort           types.Int64         `tfsdk:"forward_port"`
-	CertificateID         types.String        `tfsdk:"certificate_id"`
-	SSLForced             types.Bool          `tfsdk:"ssl_forced"`
-	HSTSEnabled           types.Bool          `tfsdk:"hsts_enabled"`
-	HSTSSubdomains        types.Bool          `tfsdk:"hsts_subdomains"`
-	HTTP2Support          types.Bool          `tfsdk:"http2_support"`
-	BlockExploits         types.Bool          `tfsdk:"block_exploits"`
-	CachingEnabled        types.Bool          `tfsdk:"caching_enabled"`
-	AllowWebsocketUpgrade types.Bool          `tfsdk:"allow_websocket_upgrade"`
-	AccessListID          types.Int64         `tfsdk:"access_list_id"`
-	AdvancedConfig        types.String        `tfsdk:"advanced_config"`
-	Enabled               types.Bool          `tfsdk:"enabled"`
-	Locations             []ProxyHostLocation `tfsdk:"location"`
+	DomainNames           []types.String       `tfsdk:"domain_names"`
+	ForwardScheme         types.String         `tfsdk:"forward_scheme"`
+	ForwardHost           types.String         `tfsdk:"forward_host"`
+	ForwardPort           types.Int64          `tfsdk:"forward_port"`
+	CertificateID         types.String         `tfsdk:"certificate_id"`
+	SSLForced             types.Bool           `tfsdk:"ssl_forced"`
+	HSTSEnabled           types.Bool           `tfsdk:"hsts_enabled"`
+	HSTSSubdomains        types.Bool           `tfsdk:"hsts_subdomains"`
+	HTTP2Support          types.Bool           `tfsdk:"http2_support"`
+	BlockExploits         types.Bool           `tfsdk:"block_exploits"`
+	CachingEnabled        types.Bool           `tfsdk:"caching_enabled"`
+	AllowWebsocketUpgrade types.Bool           `tfsdk:"allow_websocket_upgrade"`
+	AccessListID          types.Int64          `tfsdk:"access_list_id"`
+	AdvancedConfig        types.String         `tfsdk:"advanced_config"`
+	Enabled               types.Bool           `tfsdk:"enabled"`
+	Locations             []*ProxyHostLocation `tfsdk:"location"`
 }
 
 func (m *ProxyHost) Load(ctx context.Context, resource *resources.ProxyHost) diag.Diagnostics {
@@ -61,10 +61,14 @@ func (m *ProxyHost) Load(ctx context.Context, resource *resources.ProxyHost) dia
 	for i, v := range resource.DomainNames {
 		m.DomainNames[i] = types.StringValue(v)
 	}
-	m.Locations = make([]ProxyHostLocation, len(resource.Locations))
-	for i, v := range resource.Locations {
-		diags.Append(m.Locations[i].Load(ctx, &v)...)
+	var locations []*ProxyHostLocation
+	for _, locationResponse := range resource.Locations {
+		location := &ProxyHostLocation{}
+		location.Load(ctx, &locationResponse)
+
+		locations = append(locations, location)
 	}
+	m.Locations = locations
 
 	return diags
 }
