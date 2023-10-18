@@ -30,7 +30,7 @@ type ProxyHost struct {
 	AccessListID          types.Int64         `tfsdk:"access_list_id"`
 	AdvancedConfig        types.String        `tfsdk:"advanced_config"`
 	Enabled               types.Bool          `tfsdk:"enabled"`
-	Locations             []ProxyHostLocation `tfsdk:"locations"`
+	Locations             []ProxyHostLocation `tfsdk:"location"`
 }
 
 func (m *ProxyHost) Load(ctx context.Context, resource *resources.ProxyHost) diag.Diagnostics {
