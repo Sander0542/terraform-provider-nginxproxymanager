@@ -31,7 +31,7 @@ type certificateDataSource struct {
 
 func (d *certificateDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Certificate data source",
+		Description: "SSL Certificates --- Certificate data source",
 		Attributes:  attributes.Certificate,
 	}
 }

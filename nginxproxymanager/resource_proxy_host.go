@@ -36,7 +36,7 @@ type proxyHostResource struct {
 
 func (r *proxyHostResource) SchemaImpl(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manage a proxy host.",
+		Description: "Hosts --- Manage a proxy host.",
 		Attributes:  attributes.ProxyHost,
 		Blocks: map[string]schema.Block{
 			"location": schema.ListNestedBlock{

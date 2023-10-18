@@ -30,7 +30,7 @@ type redirectionHostsDataSource struct {
 
 func (d *redirectionHostsDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Redirection Hosts data source",
+		Description: "Hosts --- Redirection Hosts data source",
 		Attributes:  attributes.RedirectionHosts,
 	}
 }
