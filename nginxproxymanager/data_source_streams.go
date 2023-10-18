@@ -30,7 +30,7 @@ type streamsDataSource struct {
 
 func (d *streamsDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Stream data source.",
+		Description: "Hosts --- Stream data source.",
 		Attributes:  attributes.Streams,
 	}
 }

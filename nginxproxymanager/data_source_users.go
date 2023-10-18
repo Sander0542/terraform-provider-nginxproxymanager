@@ -30,7 +30,7 @@ type usersDataSource struct {
 
 func (d *usersDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Users data source",
+		Description: "Users --- Users data source",
 		Attributes:  attributes.Users,
 	}
 }
