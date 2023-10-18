@@ -196,3 +196,17 @@ func (c *Client) UploadCertificate(ctx context.Context, certificate *inputs.Cert
 
 	return &ar, nil
 }
+
+func (c *Client) DeleteCertificate(ctx context.Context, id *int64) error {
+	req, err := http.NewRequestWithContext(ctx, "DELETE", fmt.Sprintf("%s/api/nginx/certificates/%d", c.HostURL, *id), nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.doRequest(req, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
