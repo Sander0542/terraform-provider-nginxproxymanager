@@ -1,5 +1,5 @@
 # Manage a proxy host
-resource "nginxproxymanager_proxy_hosts" "example" {
+resource "nginxproxymanager_proxy_host" "example" {
   domain_names = ["example.com"]
 
   forward_scheme = "https"
@@ -12,7 +12,7 @@ resource "nginxproxymanager_proxy_hosts" "example" {
 
   access_list_id = 0 # Publicly Accessible
 
-  locations {
+  location {
     path           = "/admin"
     forward_scheme = "https"
     forward_host   = "example3.com"
@@ -21,7 +21,7 @@ resource "nginxproxymanager_proxy_hosts" "example" {
     advanced_config = ""
   }
 
-  locations {
+  location {
     path           = "/contact"
     forward_scheme = "http"
     forward_host   = "example4.com"

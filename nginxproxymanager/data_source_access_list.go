@@ -31,7 +31,7 @@ type accessListDataSource struct {
 
 func (d *accessListDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Access List data source",
+		Description: "Access Lists --- Access List data source",
 		Attributes:  attributes.AccessList,
 	}
 }

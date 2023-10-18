@@ -31,7 +31,7 @@ type streamDataSource struct {
 
 func (d *streamDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Fetches a stream by ID.",
+		Description: "Hosts --- Fetches a stream by ID.",
 		Attributes:  attributes.Stream,
 	}
 }

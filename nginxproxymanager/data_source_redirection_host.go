@@ -31,7 +31,7 @@ type redirectionHostDataSource struct {
 
 func (d *redirectionHostDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Fetches a redirection host by ID.",
+		Description: "Hosts --- Fetches a redirection host by ID.",
 		Attributes:  attributes.RedirectionHost,
 	}
 }

@@ -31,7 +31,7 @@ type proxyHostDataSource struct {
 
 func (d *proxyHostDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Fetches a proxy host by ID.",
+		Description: "Hosts --- Fetches a proxy host by ID.",
 		Attributes:  attributes.ProxyHost,
 	}
 }

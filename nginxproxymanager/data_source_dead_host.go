@@ -31,7 +31,7 @@ type deadHostDataSource struct {
 
 func (d *deadHostDataSource) SchemaImpl(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Fetches a dead host by ID.",
+		Description: "Hosts --- Fetches a dead host by ID.",
 		Attributes:  attributes.DeadHost,
 	}
 }
