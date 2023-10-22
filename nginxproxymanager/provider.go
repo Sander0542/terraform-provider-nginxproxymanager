@@ -230,6 +230,7 @@ func (p *nginxproxymanagerProvider) DataSources(_ context.Context) []func() data
 		NewUserDataSource,
 		NewUserMeDataSource,
 		NewUsersDataSource,
+		NewVersionDataSource,
 	}
 }
 
