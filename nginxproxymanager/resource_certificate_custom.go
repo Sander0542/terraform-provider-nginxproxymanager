@@ -35,7 +35,7 @@ type certificateCustomResource struct {
 
 func (r *certificateCustomResource) SchemaImpl(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Manage a custom certificate.",
+		Description: "SSL Certificates --- Manage a custom certificate.",
 		Attributes:  attributes.CertificateCustom,
 	}
 }
