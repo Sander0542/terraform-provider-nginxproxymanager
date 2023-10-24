@@ -34,6 +34,8 @@ func (c *Client) CreateCertificateCustom(ctx context.Context, certificateCustom 
 		return nil, err
 	}
 
+	req.Header.Set("Content-Type", "application/json")
+
 	body, err := c.doRequest(req, nil)
 	if err != nil {
 		return nil, err
@@ -137,6 +139,8 @@ func (c *Client) ValidateCertificate(ctx context.Context, certificate *inputs.Ce
 		return nil, err
 	}
 
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
 	body, err := c.doRequest(req, nil)
 	if err != nil {
 		return nil, err
@@ -182,6 +186,8 @@ func (c *Client) UploadCertificate(ctx context.Context, certificate *inputs.Cert
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Set("Content-Type", writer.FormDataContentType())
 
 	body, err := c.doRequest(req, nil)
 	if err != nil {
