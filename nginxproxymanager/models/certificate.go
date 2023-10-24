@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/sander0542/terraform-provider-nginxproxymanager/client/inputs"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 )
 
@@ -34,16 +33,6 @@ func (m *Certificate) Load(ctx context.Context, resource *resources.Certificate)
 	m.NiceName = types.StringValue(resource.NiceName)
 	m.DomainNames = domainNames
 	m.ExpiresOn = types.StringValue(resource.ExpiresOn)
-
-	return diags
-}
-
-func (m *Certificate) Save(_ context.Context, input *inputs.CertificateCustom) diag.Diagnostics {
-	diags := diag.Diagnostics{}
-
-	input.Name = m.NiceName.ValueString()
-	input.CertificateKey = m.Meta.Elements()["certificate_key"].String()
-	input.Certificate = m.Meta.Elements()["certificate"].String()
 
 	return diags
 }

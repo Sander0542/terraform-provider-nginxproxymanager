@@ -49,7 +49,7 @@ func (r *certificateCustomResource) Configure(ctx context.Context, req resource.
 }
 
 func (r *certificateCustomResource) CreateImpl(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan models.Certificate
+	var plan models.CertificateCustom
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -74,7 +74,7 @@ func (r *certificateCustomResource) CreateImpl(ctx context.Context, req resource
 }
 
 func (r *certificateCustomResource) ReadImpl(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state *models.Certificate
+	var state *models.CertificateCustom
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -87,6 +87,8 @@ func (r *certificateCustomResource) ReadImpl(ctx context.Context, req resource.R
 	}
 	if certificate == nil {
 		state = nil
+	} else if certificate.Provider != "other" {
+		resp.Diagnostics.AddError("Error reading certificate custom", "Certificate is not a custom certificate.")
 	} else {
 		resp.Diagnostics.Append(state.Load(ctx, certificate)...)
 	}
@@ -102,7 +104,7 @@ func (r *certificateCustomResource) UpdateImpl(ctx context.Context, req resource
 }
 
 func (r *certificateCustomResource) DeleteImpl(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state *models.Certificate
+	var state *models.CertificateCustom
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -116,19 +118,12 @@ func (r *certificateCustomResource) DeleteImpl(ctx context.Context, req resource
 }
 
 func (r *certificateCustomResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	var data models.Certificate
+	var data models.CertificateCustom
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
 		return
-	}
-
-	if data.Provider.ValueString() != "custom" {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("provider"),
-			"Invalid provider",
-			"Only 'custom' is allowed as provider for a certificate custom.")
 	}
 }
 
