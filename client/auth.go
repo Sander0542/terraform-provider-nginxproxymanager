@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/go-http-utils/headers"
 	"net/http"
 	"strings"
 )
@@ -37,7 +38,7 @@ func (c *Client) Authenticate(ctx context.Context, username, password *string) (
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(headers.ContentType, "application/json")
 
 	body, err := c.doRequest(req, nil)
 	if err != nil {

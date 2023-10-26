@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"github.com/go-http-utils/headers"
 	"io"
 	"net/http"
 	"time"
@@ -49,8 +50,8 @@ func (c *Client) doRequest(req *http.Request, authToken *string) ([]byte, error)
 		token = *authToken
 	}
 
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
-	req.Header.Set("User-Agent", c.UserAgent)
+	req.Header.Set(headers.Authorization, fmt.Sprintf("Bearer %s", token))
+	req.Header.Set(headers.UserAgent, c.UserAgent)
 
 	res, err := c.HTTPClient.Do(req)
 	if err != nil {
