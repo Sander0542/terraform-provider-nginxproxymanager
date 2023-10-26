@@ -100,7 +100,7 @@ func (r *certificateCustomResource) ReadImpl(ctx context.Context, req resource.R
 }
 
 func (r *certificateCustomResource) UpdateImpl(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-
+	// There is no update method for certificates, so we delete and recreate
 }
 
 func (r *certificateCustomResource) DeleteImpl(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

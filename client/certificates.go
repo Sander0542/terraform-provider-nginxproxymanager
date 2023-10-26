@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/go-http-utils/headers"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/inputs"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 	"io"
@@ -34,7 +35,7 @@ func (c *Client) CreateCertificateCustom(ctx context.Context, certificateCustom 
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(headers.ContentType, "application/json")
 
 	body, err := c.doRequest(req, nil)
 	if err != nil {
@@ -139,7 +140,7 @@ func (c *Client) ValidateCertificate(ctx context.Context, certificate *inputs.Ce
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", writer.FormDataContentType())
+	req.Header.Set(headers.ContentType, writer.FormDataContentType())
 
 	body, err := c.doRequest(req, nil)
 	if err != nil {
@@ -187,7 +188,7 @@ func (c *Client) UploadCertificate(ctx context.Context, certificate *inputs.Cert
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", writer.FormDataContentType())
+	req.Header.Set(headers.ContentType, writer.FormDataContentType())
 
 	body, err := c.doRequest(req, nil)
 	if err != nil {

@@ -4,11 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/go-http-utils/headers"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/inputs"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/client/resources"
 	"net/http"
 	"strings"
 )
+
+const proxyHostsUri = "%s/api/nginx/proxy-hosts"
+const proxyHostUri = "%s/api/nginx/proxy-hosts/%d"
 
 func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *inputs.ProxyHost) (*resources.ProxyHost, error) {
 	rb, err := json.Marshal(proxyHost)
@@ -16,12 +20,12 @@ func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *inputs.ProxyHos
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "POST", fmt.Sprintf("%s/api/nginx/proxy-hosts", c.HostURL), strings.NewReader(string(rb)))
+	req, err := http.NewRequestWithContext(ctx, "POST", fmt.Sprintf(proxyHostsUri, c.HostURL), strings.NewReader(string(rb)))
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(headers.ContentType, "application/json")
 
 	body, err := c.doRequest(req, nil)
 	if err != nil {
@@ -38,7 +42,7 @@ func (c *Client) CreateProxyHost(ctx context.Context, proxyHost *inputs.ProxyHos
 }
 
 func (c *Client) GetProxyHosts(ctx context.Context) (*resources.ProxyHostCollection, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/proxy-hosts", c.HostURL), nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf(proxyHostsUri, c.HostURL), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +62,7 @@ func (c *Client) GetProxyHosts(ctx context.Context) (*resources.ProxyHostCollect
 }
 
 func (c *Client) GetProxyHost(ctx context.Context, id *int64) (*resources.ProxyHost, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", fmt.Sprintf(proxyHostUri, c.HostURL, *id), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -87,12 +91,12 @@ func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *inpu
 		return nil, err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "PUT", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), strings.NewReader(string(rb)))
+	req, err := http.NewRequestWithContext(ctx, "PUT", fmt.Sprintf(proxyHostUri, c.HostURL, *id), strings.NewReader(string(rb)))
 	if err != nil {
 		return nil, err
 	}
 
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(headers.ContentType, "application/json")
 
 	body, err := c.doRequest(req, nil)
 	if err != nil {
@@ -109,7 +113,7 @@ func (c *Client) UpdateProxyHost(ctx context.Context, id *int64, proxyHost *inpu
 }
 
 func (c *Client) DeleteProxyHost(ctx context.Context, id *int64) error {
-	req, err := http.NewRequestWithContext(ctx, "DELETE", fmt.Sprintf("%s/api/nginx/proxy-hosts/%d", c.HostURL, *id), nil)
+	req, err := http.NewRequestWithContext(ctx, "DELETE", fmt.Sprintf(proxyHostUri, c.HostURL, *id), nil)
 	if err != nil {
 		return err
 	}
