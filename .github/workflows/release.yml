@@ -47,4 +47,4 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
-          version: ${{ secrets.SENTRY_PROJECT }}@${{ steps.goreleaser.outputs.metadata.version }}
+          version: ${{ secrets.SENTRY_PROJECT }}@${{ fromJson(steps.goreleaser.outputs.metadata).version }}
