@@ -15,7 +15,7 @@ type ProxyHost struct {
 	OwnerUserId types.Int64  `tfsdk:"owner_user_id"`
 	Meta        types.Map    `tfsdk:"meta"`
 
-	DomainNames           []types.String       `tfsdk:"domain_names"`
+	DomainNames           types.List           `tfsdk:"domain_names"`
 	ForwardScheme         types.String         `tfsdk:"forward_scheme"`
 	ForwardHost           types.String         `tfsdk:"forward_host"`
 	ForwardPort           types.Int64          `tfsdk:"forward_port"`
@@ -57,10 +57,10 @@ func (m *ProxyHost) Load(ctx context.Context, resource *resources.ProxyHost) dia
 	m.AdvancedConfig = types.StringValue(resource.AdvancedConfig)
 	m.Enabled = types.BoolValue(resource.Enabled.Bool())
 
-	m.DomainNames = make([]types.String, len(resource.DomainNames))
-	for i, v := range resource.DomainNames {
-		m.DomainNames[i] = types.StringValue(v)
-	}
+	domainNames, domainNamesDiags := types.ListValueFrom(ctx, types.StringType, resource.DomainNames)
+	diags.Append(domainNamesDiags...)
+	m.DomainNames = domainNames
+
 	var locations []*ProxyHostLocation
 	for _, locationResponse := range resource.Locations {
 		location := &ProxyHostLocation{}
@@ -91,10 +91,9 @@ func (m *ProxyHost) Save(ctx context.Context, input *inputs.ProxyHost) diag.Diag
 	input.AdvancedConfig = m.AdvancedConfig.ValueString()
 	input.Meta = map[string]string{}
 
-	input.DomainNames = make([]string, len(m.DomainNames))
-	for i, v := range m.DomainNames {
-		input.DomainNames[i] = v.ValueString()
-	}
+	input.DomainNames = make([]string, 0, len(m.DomainNames.Elements()))
+	diags.Append(m.DomainNames.ElementsAs(ctx, &input.DomainNames, false)...)
+
 	input.Locations = make([]inputs.ProxyHostLocation, len(m.Locations))
 	for i, v := range m.Locations {
 		diags.Append(v.Save(ctx, &input.Locations[i])...)
