@@ -9,14 +9,14 @@ type RedirectionHost struct {
 	ForwardDomainName string          `json:"forward_domain_name"`
 	ForwardHTTPCode   uint16          `json:"forward_http_code"`
 	CertificateID     json.RawMessage `json:"certificate_id"`
-	SSLForced         boolAsInt       `json:"ssl_forced"`
-	HSTSEnabled       boolAsInt       `json:"hsts_enabled"`
-	HSTSSubdomains    boolAsInt       `json:"hsts_subdomains"`
-	HTTP2Support      boolAsInt       `json:"http2_support"`
-	PreservePath      boolAsInt       `json:"preserve_path"`
-	BlockExploits     boolAsInt       `json:"block_exploits"`
+	SSLForced         bool            `json:"ssl_forced"`
+	HSTSEnabled       bool            `json:"hsts_enabled"`
+	HSTSSubdomains    bool            `json:"hsts_subdomains"`
+	HTTP2Support      bool            `json:"http2_support"`
+	PreservePath      bool            `json:"preserve_path"`
+	BlockExploits     bool            `json:"block_exploits"`
 	AdvancedConfig    string          `json:"advanced_config"`
-	Enabled           boolAsInt       `json:"enabled"`
+	Enabled           bool            `json:"enabled"`
 }
 
 type RedirectionHostCollection []RedirectionHost

@@ -5,8 +5,8 @@ type AccessList struct {
 	Name           string                     `json:"name"`
 	Items          AccessListAuthCollection   `json:"items"`
 	Clients        AccessListClientCollection `json:"clients"`
-	PassAuth       boolAsInt                  `json:"pass_auth"`
-	SatisfyAny     boolAsInt                  `json:"satisfy_any"`
+	PassAuth       bool                       `json:"pass_auth"`
+	SatisfyAny     bool                       `json:"satisfy_any"`
 	ProxyHostCount int64                      `json:"proxy_host_count"`
 }
 

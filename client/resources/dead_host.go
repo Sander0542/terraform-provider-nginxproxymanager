@@ -13,7 +13,7 @@ type DeadHost struct {
 	HSTSSubdomains boolAsInt       `json:"hsts_subdomains"`
 	HTTP2Support   boolAsInt       `json:"http2_support"`
 	AdvancedConfig string          `json:"advanced_config"`
-	Enabled        boolAsInt       `json:"enabled"`
+	Enabled        bool            `json:"enabled"`
 }
 
 type DeadHostCollection []DeadHost
