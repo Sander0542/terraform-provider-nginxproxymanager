@@ -34,9 +34,9 @@ func (m *Stream) Load(ctx context.Context, resource *resources.Stream) diag.Diag
 	m.IncomingPort = types.Int64Value(int64(resource.IncomingPort))
 	m.ForwardingHost = types.StringValue(resource.ForwardingHost)
 	m.ForwardingPort = types.Int64Value(int64(resource.ForwardingPort))
-	m.TCPForwarding = types.BoolValue(resource.TCPForwarding.Bool())
-	m.UDPForwarding = types.BoolValue(resource.UDPForwarding.Bool())
-	m.Enabled = types.BoolValue(resource.Enabled.Bool())
+	m.TCPForwarding = types.BoolValue(resource.TCPForwarding)
+	m.UDPForwarding = types.BoolValue(resource.UDPForwarding)
+	m.Enabled = types.BoolValue(resource.Enabled)
 
 	return diags
 }

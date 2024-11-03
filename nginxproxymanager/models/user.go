@@ -34,7 +34,7 @@ func (m *User) Load(ctx context.Context, resource *resources.User) diag.Diagnost
 	m.Nickname = types.StringValue(resource.Nickname)
 	m.Email = types.StringValue(resource.Email)
 	m.Avatar = types.StringValue(resource.Avatar)
-	m.IsDisabled = types.BoolValue(resource.IsDisabled.Bool())
+	m.IsDisabled = types.BoolValue(resource.IsDisabled)
 
 	m.Roles = make([]types.String, len(resource.Roles))
 	for i, v := range resource.Roles {

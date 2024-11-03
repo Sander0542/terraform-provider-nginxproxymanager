@@ -31,8 +31,8 @@ func (m *AccessList) Load(ctx context.Context, resource *resources.AccessList) d
 	m.Meta = meta
 
 	m.Name = types.StringValue(resource.Name)
-	m.PassAuth = types.BoolValue(resource.PassAuth.Bool())
-	m.SatisfyAny = types.BoolValue(resource.SatisfyAny.Bool())
+	m.PassAuth = types.BoolValue(resource.PassAuth)
+	m.SatisfyAny = types.BoolValue(resource.SatisfyAny)
 
 	m.Authorization = make([]AccessListAuthorization, len(resource.Items))
 	for i, v := range resource.Items {

@@ -40,7 +40,7 @@ func (m *DeadHost) Load(ctx context.Context, resource *resources.DeadHost) diag.
 	m.HSTSSubdomains = types.BoolValue(resource.HSTSSubdomains.Bool())
 	m.HTTP2Support = types.BoolValue(resource.HTTP2Support.Bool())
 	m.AdvancedConfig = types.StringValue(resource.AdvancedConfig)
-	m.Enabled = types.BoolValue(resource.Enabled.Bool())
+	m.Enabled = types.BoolValue(resource.Enabled)
 
 	m.DomainNames = make([]types.String, len(resource.DomainNames))
 	for i, v := range resource.DomainNames {
