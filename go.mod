@@ -1,6 +1,8 @@
 module github.com/sander0542/terraform-provider-nginxproxymanager
 
-go 1.20
+go 1.21
+
+toolchain go1.22.5
 
 require (
 	github.com/getsentry/sentry-go v0.28.1
