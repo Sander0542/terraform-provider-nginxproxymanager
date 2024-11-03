@@ -6,7 +6,7 @@ type User struct {
 	Nickname    string          `json:"nickname"`
 	Email       string          `json:"email"`
 	Avatar      string          `json:"avatar"`
-	IsDisabled  boolAsInt       `json:"is_disabled"`
+	IsDisabled  bool            `json:"is_disabled"`
 	Roles       []string        `json:"roles"`
 	Permissions UserPermissions `json:"permissions"`
 }
