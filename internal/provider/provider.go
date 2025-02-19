@@ -185,6 +185,8 @@ func (p *NginxProxyManagerProvider) EphemeralResources(ctx context.Context) []fu
 
 func (p *NginxProxyManagerProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
+		NewAccessListDataSource,
+		NewAccessListsDataSource,
 	}
 }
 
