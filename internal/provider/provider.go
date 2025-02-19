@@ -200,6 +200,7 @@ func (p *NginxProxyManagerProvider) DataSources(ctx context.Context) []func() da
 		NewUserDataSource,
 		NewUserMeDataSource,
 		NewUsersDataSource,
+		NewVersionDataSource,
 	}
 }
 
