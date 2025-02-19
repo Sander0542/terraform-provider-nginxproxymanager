@@ -193,6 +193,8 @@ func (p *NginxProxyManagerProvider) DataSources(ctx context.Context) []func() da
 		NewDeadHostsDataSource,
 		NewProxyHostDataSource,
 		NewProxyHostsDataSource,
+		NewRedirectionHostDataSource,
+		NewRedirectionHostsDataSource,
 	}
 }
 
