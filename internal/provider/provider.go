@@ -5,7 +5,12 @@ package provider
 
 import (
 	"context"
-	"net/http"
+	"net/url"
+	"os"
+
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/sander0542/nginxproxymanager-go"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
@@ -31,7 +36,14 @@ type NginxProxyManagerProvider struct {
 
 // NginxProxyManagerProviderModel describes the provider data model.
 type NginxProxyManagerProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
+	Url      types.String `tfsdk:"url"`
+	Username types.String `tfsdk:"username"`
+	Password types.String `tfsdk:"password"`
+}
+
+type NginxProxyManagerProviderData struct {
+	Client *nginxproxymanager.APIClient
+	Auth   context.Context
 }
 
 func (p *NginxProxyManagerProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -42,30 +54,125 @@ func (p *NginxProxyManagerProvider) Metadata(ctx context.Context, req provider.M
 func (p *NginxProxyManagerProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"endpoint": schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
+			"url": schema.StringAttribute{
+				MarkdownDescription: "Full Nginx Proxy Manager URL with protocol and port (e.g. `http://localhost:81`). You should **NOT** supply any path (`/api`), the SDK will use the appropriate paths. Can be specified via the `NGINXPROXYMANAGER_URL` environment variable.",
 				Optional:            true,
+			},
+			"username": schema.StringAttribute{
+				MarkdownDescription: "Username for Nginx Proxy Manager authentication. Can be specified via the `NGINXPROXYMANAGER_USERNAME` environment variable.",
+				Optional:            true,
+			},
+			"password": schema.StringAttribute{
+				MarkdownDescription: "Password for Nginx Proxy Manager authentication. Can be specified via the `NGINXPROXYMANAGER_PASSWORD` environment variable.",
+				Optional:            true,
+				Sensitive:           true,
 			},
 		},
 	}
 }
 
 func (p *NginxProxyManagerProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+
 	var data NginxProxyManagerProviderModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
 	if resp.Diagnostics.HasError() {
+		tflog.Trace(ctx, "Failed to load provider configuration")
 		return
 	}
 
-	// Configuration values are now available.
-	// if data.Endpoint.IsNull() { /* ... */ }
+	// Url
+	apiUrl := data.Url.ValueString()
+	if apiUrl == "" {
+		tflog.Trace(ctx, "Url is not set in configuration, checking environment variables")
+		apiUrl = os.Getenv("NGINXPROXYMANAGER_URL")
+	}
 
-	// Example client configuration for data sources and resources
-	client := http.DefaultClient
-	resp.DataSourceData = client
-	resp.ResourceData = client
+	parsedUrl, err := url.Parse(apiUrl)
+	if err != nil {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("url"),
+			"Url is required",
+			"Please provide a valid url value",
+		)
+
+		return
+	}
+	parsedUrl = parsedUrl.JoinPath("/api")
+
+	// Username
+	username := data.Username.ValueString()
+	if username == "" {
+		tflog.Trace(ctx, "Username is not set in configuration, checking environment variables")
+		username = os.Getenv("NGINXPROXYMANAGER_USERNAME")
+	}
+
+	if username == "" {
+		tflog.Debug(ctx, "Username is not set in configuration or environment variables")
+		resp.Diagnostics.AddAttributeError(
+			path.Root("username"),
+			"Username is required",
+			"Please provide a username value",
+		)
+	}
+
+	// Password
+	password := data.Password.ValueString()
+	if password == "" {
+		tflog.Trace(ctx, "Password is not set in configuration, checking environment variables")
+		password = os.Getenv("NGINXPROXYMANAGER_PASSWORD")
+	}
+
+	if password == "" {
+		tflog.Debug(ctx, "Password is not set in configuration or environment variables")
+		resp.Diagnostics.AddAttributeError(
+			path.Root("password"),
+			"Password is required",
+			"Please provide a password value",
+		)
+	}
+
+	if resp.Diagnostics.HasError() {
+		tflog.Trace(ctx, "Failed to load provider configuration")
+		return
+	}
+
+	tflog.MaskMessageStrings(ctx, username, password)
+	tflog.Info(ctx, "Initializing the Nginx Proxy Manager API client")
+
+	config := nginxproxymanager.NewConfiguration()
+	config.Servers[0].URL = parsedUrl.String()
+	client := nginxproxymanager.NewAPIClient(config)
+
+	auth := context.Background()
+
+	tflog.Info(ctx, "Authenticating with the Nginx Proxy Manager API")
+
+	tokenRequest := nginxproxymanager.RequestTokenRequest{
+		Identity: username,
+		Secret:   password,
+	}
+
+	tokenResponse, _, err := client.TokensAPI.RequestToken(auth).RequestTokenRequest(tokenRequest).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to authenticate with the Nginx Proxy Manager API", err.Error())
+		return
+	}
+
+	tflog.Info(ctx, "Successfully authenticated with the Nginx Proxy Manager API")
+
+	auth = context.WithValue(auth, nginxproxymanager.ContextAccessToken, tokenResponse.GetToken())
+
+	providerData := NginxProxyManagerProviderData{
+		Auth:   auth,
+		Client: client,
+	}
+
+	resp.DataSourceData = &providerData
+	resp.ResourceData = &providerData
+
+	tflog.Info(ctx, "Successfully initialized the Nginx Proxy Manager API client")
 }
 
 func (p *NginxProxyManagerProvider) Resources(ctx context.Context) []func() resource.Resource {
