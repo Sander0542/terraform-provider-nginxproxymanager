@@ -13,3 +13,10 @@ import (
 func ListDomainNamesFrom(ctx context.Context, domainNames []string) (basetypes.ListValue, diag.Diagnostics) {
 	return types.ListValueFrom(ctx, types.StringType, domainNames)
 }
+
+func DomainNameElementsAs(ctx context.Context, list types.List) ([]string, diag.Diagnostics) {
+	domainNames := make([]string, len(list.Elements()))
+	diags := list.ElementsAs(ctx, &domainNames, false)
+
+	return domainNames, diags
+}

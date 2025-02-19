@@ -101,3 +101,79 @@ func (m *ProxyHost) Write(ctx context.Context, proxyHost *nginxproxymanager.GetP
 	m.Locations, tmpDiags = SetProxyHostLocationsFrom(ctx, proxyHost.GetLocations())
 	diags.Append(tmpDiags...)
 }
+
+func (m *ProxyHost) ToCreateRequest(ctx context.Context, diags *diag.Diagnostics) *nginxproxymanager.CreateProxyHostRequest {
+	domainNames, tmpDiags := DomainNameElementsAs(ctx, m.DomainNames)
+	diags.Append(tmpDiags...)
+
+	locations, tmpDiags := ProxyHostLocationElementsAs(ctx, m.Locations)
+	diags.Append(tmpDiags...)
+
+	request := nginxproxymanager.NewCreateProxyHostRequest(
+		domainNames,
+		m.ForwardScheme.ValueString(),
+		m.ForwardHost.ValueString(),
+		m.ForwardPort.ValueInt64(),
+	)
+
+	certificateId := m.CertificateId.ValueInt64()
+	request.SetCertificateId(nginxproxymanager.GetProxyHosts200ResponseInnerCertificateId{
+		Int64: &certificateId,
+	})
+	request.SetAccessListId(m.AccessListId.ValueInt64())
+	request.SetSslForced(m.SslForced.ValueBool())
+	request.SetHstsEnabled(m.HstsEnabled.ValueBool())
+	request.SetHstsSubdomains(m.HstsSubdomains.ValueBool())
+	request.SetHttp2Support(m.Http2Support.ValueBool())
+	request.SetBlockExploits(m.BlockExploits.ValueBool())
+	request.SetCachingEnabled(m.CachingEnabled.ValueBool())
+	request.SetAllowWebsocketUpgrade(m.AllowWebsocketUpgrade.ValueBool())
+	request.SetAdvancedConfig(m.AdvancedConfig.ValueString())
+	request.SetMeta(map[string]interface{}{})
+
+	requestLocations := make([]nginxproxymanager.GetProxyHosts200ResponseInnerLocationsInner, 0, len(locations))
+	for _, location := range locations {
+		item := location.Read(ctx, diags)
+		requestLocations = append(requestLocations, *item)
+	}
+	request.SetLocations(requestLocations)
+
+	return request
+}
+
+func (m *ProxyHost) ToUpdateRequest(ctx context.Context, diags *diag.Diagnostics) *nginxproxymanager.UpdateProxyHostRequest {
+	domainNames, tmpDiags := DomainNameElementsAs(ctx, m.DomainNames)
+	diags.Append(tmpDiags...)
+
+	locations, tmpDiags := ProxyHostLocationElementsAs(ctx, m.Locations)
+	diags.Append(tmpDiags...)
+
+	request := nginxproxymanager.NewUpdateProxyHostRequest()
+
+	request.SetDomainNames(domainNames)
+	request.SetForwardScheme(m.ForwardScheme.ValueString())
+	request.SetForwardHost(m.ForwardHost.ValueString())
+	request.SetForwardPort(m.ForwardPort.ValueInt64())
+	certificateId := m.CertificateId.ValueInt64()
+	request.SetCertificateId(nginxproxymanager.GetProxyHosts200ResponseInnerCertificateId{
+		Int64: &certificateId,
+	})
+	request.SetAccessListId(m.AccessListId.ValueInt64())
+	request.SetSslForced(m.SslForced.ValueBool())
+	request.SetHstsEnabled(m.HstsEnabled.ValueBool())
+	request.SetHstsSubdomains(m.HstsSubdomains.ValueBool())
+	request.SetHttp2Support(m.Http2Support.ValueBool())
+	request.SetBlockExploits(m.BlockExploits.ValueBool())
+	request.SetCachingEnabled(m.CachingEnabled.ValueBool())
+	request.SetAllowWebsocketUpgrade(m.AllowWebsocketUpgrade.ValueBool())
+	request.SetAdvancedConfig(m.AdvancedConfig.ValueString())
+
+	requestLocations := make([]nginxproxymanager.GetProxyHosts200ResponseInnerLocationsInner, 0, len(locations))
+	for _, location := range locations {
+		item := location.Read(ctx, diags)
+		requestLocations = append(requestLocations, *item)
+	}
+	request.SetLocations(requestLocations)
+
+	return request
+}

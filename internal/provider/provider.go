@@ -176,7 +176,9 @@ func (p *NginxProxyManagerProvider) Configure(ctx context.Context, req provider.
 }
 
 func (p *NginxProxyManagerProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+	return []func() resource.Resource{
+		NewProxyHostResource,
+	}
 }
 
 func (p *NginxProxyManagerProvider) EphemeralResources(ctx context.Context) []func() ephemeral.EphemeralResource {

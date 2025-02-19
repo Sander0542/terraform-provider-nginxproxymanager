@@ -37,6 +37,18 @@ func (m *ProxyHostLocation) Write(_ context.Context, location *nginxproxymanager
 	m.AdvancedConfig = types.StringValue(location.GetAdvancedConfig())
 }
 
+func (m *ProxyHostLocation) Read(ctx context.Context, diags *diag.Diagnostics) *nginxproxymanager.GetProxyHosts200ResponseInnerLocationsInner {
+	location := nginxproxymanager.NewGetProxyHosts200ResponseInnerLocationsInner(
+		m.Path.ValueString(),
+		m.ForwardScheme.ValueString(),
+		m.ForwardHost.ValueString(),
+		m.ForwardPort.ValueInt64(),
+	)
+	location.SetAdvancedConfig(m.AdvancedConfig.ValueString())
+
+	return location
+}
+
 func SetProxyHostLocationsFrom(ctx context.Context, locations []nginxproxymanager.GetProxyHosts200ResponseInnerLocationsInner) (types.Set, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
@@ -52,4 +64,11 @@ func SetProxyHostLocationsFrom(ctx context.Context, locations []nginxproxymanage
 	diags.Append(setDiags...)
 
 	return set, diags
+}
+
+func ProxyHostLocationElementsAs(ctx context.Context, set types.Set) ([]ProxyHostLocation, diag.Diagnostics) {
+	locations := make([]ProxyHostLocation, len(set.Elements()))
+	diags := set.ElementsAs(ctx, &locations, false)
+
+	return locations, diags
 }
