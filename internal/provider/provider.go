@@ -187,6 +187,8 @@ func (p *NginxProxyManagerProvider) DataSources(ctx context.Context) []func() da
 	return []func() datasource.DataSource{
 		NewAccessListDataSource,
 		NewAccessListsDataSource,
+		NewCertificateDataSource,
+		NewCertificatesDataSource,
 	}
 }
 
