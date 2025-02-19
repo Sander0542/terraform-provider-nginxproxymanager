@@ -189,6 +189,8 @@ func (p *NginxProxyManagerProvider) DataSources(ctx context.Context) []func() da
 		NewAccessListsDataSource,
 		NewCertificateDataSource,
 		NewCertificatesDataSource,
+		NewDeadHostDataSource,
+		NewDeadHostsDataSource,
 	}
 }
 
