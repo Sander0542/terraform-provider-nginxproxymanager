@@ -24,6 +24,6 @@ func (m *Certificates) Write(ctx context.Context, certificates *[]nginxproxymana
 		elements = append(elements, item)
 	}
 
-	m.Certificates, tmpDiags = types.SetValueFrom(ctx, Certificate{}.getType(), elements)
+	m.Certificates, tmpDiags = types.SetValueFrom(ctx, Certificate{}.GetType(), elements)
 	diags.Append(tmpDiags...)
 }

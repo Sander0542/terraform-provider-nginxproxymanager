@@ -24,6 +24,6 @@ func (m *RedirectionHosts) Write(ctx context.Context, redirectionHosts *[]nginxp
 		elements = append(elements, item)
 	}
 
-	m.RedirectionHosts, tmpDiags = types.SetValueFrom(ctx, RedirectionHost{}.getType(), elements)
+	m.RedirectionHosts, tmpDiags = types.SetValueFrom(ctx, RedirectionHost{}.GetType(), elements)
 	diags.Append(tmpDiags...)
 }

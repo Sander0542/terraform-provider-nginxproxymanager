@@ -21,7 +21,7 @@ type UserPermissions struct {
 	Visibility       types.String `tfsdk:"visibility"`
 }
 
-func (_ UserPermissions) getType() attr.Type {
+func (_ UserPermissions) GetType() attr.TypeWithAttributeTypes {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"visibility":        types.StringType,
 		"access_lists":      types.StringType,
@@ -49,7 +49,7 @@ func ObjectUserPermissionsFrom(ctx context.Context, permissions nginxproxymanage
 	attributes := UserPermissions{}
 	attributes.Write(ctx, &permissions, &diags)
 
-	object, objectDiags := types.ObjectValueFrom(ctx, UserPermissions{}.getType().(attr.TypeWithAttributeTypes).AttributeTypes(), attributes)
+	object, objectDiags := types.ObjectValueFrom(ctx, UserPermissions{}.GetType().AttributeTypes(), attributes)
 	diags.Append(objectDiags...)
 
 	return object, diags

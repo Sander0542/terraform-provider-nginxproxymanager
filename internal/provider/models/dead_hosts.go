@@ -24,6 +24,6 @@ func (m *DeadHosts) Write(ctx context.Context, deadHosts *[]nginxproxymanager.Ge
 		elements = append(elements, item)
 	}
 
-	m.DeadHosts, tmpDiags = types.SetValueFrom(ctx, DeadHost{}.getType(), elements)
+	m.DeadHosts, tmpDiags = types.SetValueFrom(ctx, DeadHost{}.GetType(), elements)
 	diags.Append(tmpDiags...)
 }

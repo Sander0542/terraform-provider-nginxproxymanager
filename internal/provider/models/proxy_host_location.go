@@ -19,7 +19,7 @@ type ProxyHostLocation struct {
 	AdvancedConfig types.String `tfsdk:"advanced_config"`
 }
 
-func (_ ProxyHostLocation) getType() attr.Type {
+func (_ ProxyHostLocation) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"path":            types.StringType,
 		"forward_scheme":  types.StringType,
@@ -47,7 +47,7 @@ func SetProxyHostLocationsFrom(ctx context.Context, locations []nginxproxymanage
 		elements = append(elements, item)
 	}
 
-	set, setDiags := types.SetValueFrom(ctx, ProxyHostLocation{}.getType(), elements)
+	set, setDiags := types.SetValueFrom(ctx, ProxyHostLocation{}.GetType(), elements)
 
 	diags.Append(setDiags...)
 

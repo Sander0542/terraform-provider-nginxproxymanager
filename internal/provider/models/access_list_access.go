@@ -21,7 +21,7 @@ type AccessListAccess struct {
 	Directive types.String `tfsdk:"directive"`
 }
 
-func (_ AccessListAccess) getType() attr.Type {
+func (_ AccessListAccess) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":          types.Int64Type,
 		"created_on":  types.StringType,
@@ -56,7 +56,7 @@ func SetAccessListAccessFrom(ctx context.Context, accessList []nginxproxymanager
 		elements = append(elements, item)
 	}
 
-	set, setDiags := types.SetValueFrom(ctx, AccessListAccess{}.getType(), elements)
+	set, setDiags := types.SetValueFrom(ctx, AccessListAccess{}.GetType(), elements)
 
 	diags.Append(setDiags...)
 

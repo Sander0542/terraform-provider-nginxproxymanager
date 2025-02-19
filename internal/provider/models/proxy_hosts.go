@@ -24,6 +24,6 @@ func (m *ProxyHosts) Write(ctx context.Context, proxyHosts *[]nginxproxymanager.
 		elements = append(elements, item)
 	}
 
-	m.ProxyHosts, tmpDiags = types.SetValueFrom(ctx, ProxyHost{}.getType(), elements)
+	m.ProxyHosts, tmpDiags = types.SetValueFrom(ctx, ProxyHost{}.GetType(), elements)
 	diags.Append(tmpDiags...)
 }

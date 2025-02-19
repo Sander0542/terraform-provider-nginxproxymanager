@@ -24,6 +24,6 @@ func (m *AccessLists) Write(ctx context.Context, accessLists *[]nginxproxymanage
 		elements = append(elements, item)
 	}
 
-	m.AccessLists, tmpDiags = types.SetValueFrom(ctx, AccessList{}.getType(), elements)
+	m.AccessLists, tmpDiags = types.SetValueFrom(ctx, AccessList{}.GetType(), elements)
 	diags.Append(tmpDiags...)
 }

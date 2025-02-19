@@ -27,7 +27,7 @@ type Stream struct {
 	Enabled        types.Bool   `tfsdk:"enabled"`
 }
 
-func (_ Stream) getType() attr.Type {
+func (_ Stream) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":              types.Int64Type,
 		"created_on":      types.StringType,

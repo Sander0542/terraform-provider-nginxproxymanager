@@ -25,7 +25,7 @@ type User struct {
 	Permissions types.Object `tfsdk:"permissions"`
 }
 
-func (_ User) getType() attr.Type {
+func (_ User) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":          types.Int64Type,
 		"created_on":  types.StringType,
@@ -36,7 +36,7 @@ func (_ User) getType() attr.Type {
 		"avatar":      types.StringType,
 		"is_disabled": types.BoolType,
 		"roles":       types.ListType{ElemType: types.StringType},
-		"permissions": types.ObjectType{AttrTypes: UserPermissions{}.getType().(attr.TypeWithAttributeTypes).AttributeTypes()},
+		"permissions": types.ObjectType{AttrTypes: UserPermissions{}.GetType().AttributeTypes()},
 	})
 }
 
@@ -60,6 +60,6 @@ func (m *User) Write(ctx context.Context, user *nginxproxymanager.GetAccessLists
 		m.Permissions, tmpDiags = ObjectUserPermissionsFrom(ctx, user.GetPermissions())
 		diags.Append(tmpDiags...)
 	} else {
-		m.Permissions = types.ObjectNull(UserPermissions{}.getType().(attr.TypeWithAttributeTypes).AttributeTypes())
+		m.Permissions = types.ObjectNull(UserPermissions{}.GetType().AttributeTypes())
 	}
 }

@@ -25,7 +25,7 @@ type AccessList struct {
 	SatisfyAny     types.Bool   `tfsdk:"satisfy_any"`
 }
 
-func (_ AccessList) getType() attr.Type {
+func (_ AccessList) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":             types.Int64Type,
 		"created_on":     types.StringType,
@@ -33,8 +33,8 @@ func (_ AccessList) getType() attr.Type {
 		"owner_user_id":  types.Int64Type,
 		"meta":           types.MapType{ElemType: types.StringType},
 		"name":           types.StringType,
-		"authorizations": types.SetType{ElemType: AccessListAuthorization{}.getType()},
-		"access":         types.SetType{ElemType: AccessListAccess{}.getType()},
+		"authorizations": types.SetType{ElemType: AccessListAuthorization{}.GetType()},
+		"access":         types.SetType{ElemType: AccessListAccess{}.GetType()},
 		"pass_auth":      types.BoolType,
 		"satisfy_any":    types.BoolType,
 	})

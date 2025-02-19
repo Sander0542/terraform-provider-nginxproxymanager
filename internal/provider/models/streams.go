@@ -24,6 +24,6 @@ func (m *Streams) Write(ctx context.Context, streams *[]nginxproxymanager.GetStr
 		elements = append(elements, item)
 	}
 
-	m.Streams, tmpDiags = types.SetValueFrom(ctx, Stream{}.getType(), elements)
+	m.Streams, tmpDiags = types.SetValueFrom(ctx, Stream{}.GetType(), elements)
 	diags.Append(tmpDiags...)
 }

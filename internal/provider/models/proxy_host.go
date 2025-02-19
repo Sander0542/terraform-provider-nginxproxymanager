@@ -36,7 +36,7 @@ type ProxyHost struct {
 	Locations             types.Set    `tfsdk:"locations"`
 }
 
-func (_ ProxyHost) getType() attr.Type {
+func (_ ProxyHost) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":                      types.Int64Type,
 		"created_on":              types.StringType,
@@ -58,7 +58,7 @@ func (_ ProxyHost) getType() attr.Type {
 		"access_list_id":          types.Int64Type,
 		"advanced_config":         types.StringType,
 		"enabled":                 types.BoolType,
-		"locations":               types.SetType{ElemType: ProxyHostLocation{}.getType()},
+		"locations":               types.SetType{ElemType: ProxyHostLocation{}.GetType()},
 	})
 }
 

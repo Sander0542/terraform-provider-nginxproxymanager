@@ -21,7 +21,7 @@ type AccessListAuthorization struct {
 	PasswordHint types.String `tfsdk:"password_hint"`
 }
 
-func (_ AccessListAuthorization) getType() attr.Type {
+func (_ AccessListAuthorization) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":            types.Int64Type,
 		"created_on":    types.StringType,
@@ -56,7 +56,7 @@ func SetAccessListAuthorizationsFrom(ctx context.Context, authorizations []nginx
 		elements = append(elements, item)
 	}
 
-	set, setDiags := types.SetValueFrom(ctx, AccessListAuthorization{}.getType(), elements)
+	set, setDiags := types.SetValueFrom(ctx, AccessListAuthorization{}.GetType(), elements)
 
 	diags.Append(setDiags...)
 
