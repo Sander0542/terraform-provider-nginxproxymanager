@@ -31,7 +31,7 @@ func (d *DeadHostsDataSource) Metadata(ctx context.Context, req datasource.Metad
 
 func (d *DeadHostsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information on all 404 hosts.",
+		MarkdownDescription: "Hosts --- This data source can be used to get information on all 404 hosts.",
 		Attributes: map[string]schema.Attribute{
 			"dead_hosts": schema.SetNestedAttribute{
 				MarkdownDescription: "The 404 hosts.",

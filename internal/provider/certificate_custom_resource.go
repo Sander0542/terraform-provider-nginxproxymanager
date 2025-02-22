@@ -37,7 +37,7 @@ func (r *CertificateCustomResource) Metadata(ctx context.Context, req resource.M
 
 func (r *CertificateCustomResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This resource can be used to manage a custom certificate.",
+		MarkdownDescription: "SSL Certificates --- This resource can be used to manage a custom certificate.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				MarkdownDescription: "The ID of the certificate.",

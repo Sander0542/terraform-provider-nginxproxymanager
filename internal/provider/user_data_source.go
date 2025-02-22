@@ -31,7 +31,7 @@ func (d *UserDataSource) Metadata(ctx context.Context, req datasource.MetadataRe
 
 func (d *UserDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information about a specific user.",
+		MarkdownDescription: "Users --- This data source can be used to get information about a specific user.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				MarkdownDescription: "The Id of the user.",

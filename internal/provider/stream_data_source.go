@@ -31,7 +31,7 @@ func (d *StreamDataSource) Metadata(ctx context.Context, req datasource.Metadata
 
 func (d *StreamDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information about a specific stream.",
+		MarkdownDescription: "Hosts --- This data source can be used to get information about a specific stream.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				MarkdownDescription: "The Id of the stream.",

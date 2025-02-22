@@ -31,7 +31,7 @@ func (d *StreamsDataSource) Metadata(ctx context.Context, req datasource.Metadat
 
 func (d *StreamsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information on all streams.",
+		MarkdownDescription: "Hosts --- This data source can be used to get information on all streams.",
 		Attributes: map[string]schema.Attribute{
 			"streams": schema.SetNestedAttribute{
 				MarkdownDescription: "The streams.",
