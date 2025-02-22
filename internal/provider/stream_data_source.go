@@ -104,7 +104,7 @@ func (d *StreamDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 	response, _, err := d.client.StreamsAPI.GetStream(d.auth, data.Id.ValueInt64()).Execute()
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read proxy host, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read stream, got error: %s", err))
 		return
 	}
 
