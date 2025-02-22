@@ -31,7 +31,7 @@ func (d *ProxyHostsDataSource) Metadata(ctx context.Context, req datasource.Meta
 
 func (d *ProxyHostsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information on all proxy hosts.",
+		MarkdownDescription: "Hosts --- This data source can be used to get information on all proxy hosts.",
 		Attributes: map[string]schema.Attribute{
 			"proxy_hosts": schema.SetNestedAttribute{
 				MarkdownDescription: "The proxy hosts.",

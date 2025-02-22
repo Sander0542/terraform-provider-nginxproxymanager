@@ -31,7 +31,7 @@ func (d *CertificateDataSource) Metadata(ctx context.Context, req datasource.Met
 
 func (d *CertificateDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information about a specific certificate.",
+		MarkdownDescription: "SSL Certificates --- This data source can be used to get information about a specific certificate.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				MarkdownDescription: "The Id of the certificate.",

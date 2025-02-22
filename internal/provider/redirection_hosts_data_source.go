@@ -31,7 +31,7 @@ func (d *RedirectionHostsDataSource) Metadata(ctx context.Context, req datasourc
 
 func (d *RedirectionHostsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information on all redirection hosts.",
+		MarkdownDescription: "Hosts --- This data source can be used to get information on all redirection hosts.",
 		Attributes: map[string]schema.Attribute{
 			"redirection_hosts": schema.SetNestedAttribute{
 				MarkdownDescription: "The redirection hosts.",

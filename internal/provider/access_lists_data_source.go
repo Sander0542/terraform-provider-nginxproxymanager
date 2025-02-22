@@ -31,7 +31,7 @@ func (d *AccessListsDataSource) Metadata(ctx context.Context, req datasource.Met
 
 func (d *AccessListsDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information on all access lists.",
+		MarkdownDescription: "Access Lists --- This data source can be used to get information on all access lists.",
 		Attributes: map[string]schema.Attribute{
 			"access_lists": schema.SetNestedAttribute{
 				MarkdownDescription: "The access lists.",

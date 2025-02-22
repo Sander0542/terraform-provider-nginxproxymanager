@@ -31,7 +31,7 @@ func (d *UsersDataSource) Metadata(ctx context.Context, req datasource.MetadataR
 
 func (d *UsersDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information on all users.",
+		MarkdownDescription: "Users --- This data source can be used to get information on all users.",
 		Attributes: map[string]schema.Attribute{
 			"users": schema.SetNestedAttribute{
 				MarkdownDescription: "The users.",

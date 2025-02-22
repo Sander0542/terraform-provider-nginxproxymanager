@@ -31,7 +31,7 @@ func (d *CertificatesDataSource) Metadata(ctx context.Context, req datasource.Me
 
 func (d *CertificatesDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get information on all certificates.",
+		MarkdownDescription: "SSL Certificates --- This data source can be used to get information on all certificates.",
 		Attributes: map[string]schema.Attribute{
 			"certificates": schema.SetNestedAttribute{
 				MarkdownDescription: "The certificates.",

@@ -30,7 +30,7 @@ func (d *VersionDataSource) Metadata(ctx context.Context, req datasource.Metadat
 
 func (d *VersionDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		MarkdownDescription: "This data source can be used to get the current version of nginx proxy manager.",
+		MarkdownDescription: "Meta --- This data source can be used to get the current version of nginx proxy manager.",
 		Attributes: map[string]schema.Attribute{
 			"major": schema.Int64Attribute{
 				MarkdownDescription: "The major version number.",
