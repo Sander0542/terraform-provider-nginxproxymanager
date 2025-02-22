@@ -7,5 +7,6 @@ project {
   header_ignore = [
     ".github/**",
     "examples/**",
+    "templates/**",
   ]
 }
