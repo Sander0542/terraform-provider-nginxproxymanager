@@ -19,8 +19,8 @@ type Version struct {
 }
 
 func (m *Version) Write(_ context.Context, version *nginxproxymanager.Health200ResponseVersion, _ *diag.Diagnostics) {
-	m.Major = types.Int64Value(version.Major)
-	m.Minor = types.Int64Value(version.Minor)
-	m.Revision = types.Int64Value(version.Revision)
-	m.Version = types.StringValue(fmt.Sprintf("%d.%d.%d", version.Major, version.Minor, version.Revision))
+	m.Major = types.Int64Value(version.GetMajor())
+	m.Minor = types.Int64Value(version.GetMinor())
+	m.Revision = types.Int64Value(version.GetRevision())
+	m.Version = types.StringValue(fmt.Sprintf("%d.%d.%d", version.GetMajor(), version.GetMinor(), version.GetRevision()))
 }
