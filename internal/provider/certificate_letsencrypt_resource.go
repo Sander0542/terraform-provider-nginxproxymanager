@@ -217,7 +217,7 @@ func (r *CertificateLetsencryptResource) Delete(ctx context.Context, req resourc
 func (r *CertificateLetsencryptResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	id, err := strconv.ParseInt(req.ID, 10, 64)
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Could not convert ID to number, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Could not convert id to number, got error: %s", err))
 		return
 	}
 

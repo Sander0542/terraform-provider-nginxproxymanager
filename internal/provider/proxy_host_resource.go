@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/nginxproxymanager-go"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/internal/provider/models"
+	"strconv"
 )
 
 var _ resource.Resource = &ProxyHostResource{}
@@ -354,5 +355,18 @@ func (r *ProxyHostResource) Delete(ctx context.Context, req resource.DeleteReque
 }
 
 func (r *ProxyHostResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
+	id, err := strconv.ParseInt(req.ID, 10, 64)
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Could not convert id to number, got error: %s", err))
+		return
+	}
+
+	proxyHost, _, err := r.client.ProxyHostsAPI.GetProxyHost(r.auth, id).Execute()
+	if err != nil {
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read proxy host, got error: %s", err))
+		return
+	}
+
+	diags := resp.State.SetAttribute(ctx, path.Root("id"), types.Int64Value(proxyHost.GetId()))
+	resp.Diagnostics.Append(diags...)
 }
