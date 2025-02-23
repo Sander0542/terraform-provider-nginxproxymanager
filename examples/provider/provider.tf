@@ -1,7 +1,7 @@
 # Configuration-based authentication
 provider "nginxproxymanager" {
   host     = "http://localhost:81"
-  username = "admin"
+  username = "admin@example.com"
   password = "changeme"
 }
 

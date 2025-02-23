@@ -3,12 +3,12 @@
 page_title: "nginxproxymanager Provider"
 subcategory: ""
 description: |-
-  
+  Use the Nginx Proxy Manager (NPM) provider to interact with resources from Nginx Proxy Manager.
 ---
 
 # nginxproxymanager Provider
 
-
+Use the Nginx Proxy Manager (NPM) provider to interact with resources from Nginx Proxy Manager.
 
 ## Example Usage
 
@@ -16,7 +16,7 @@ description: |-
 # Configuration-based authentication
 provider "nginxproxymanager" {
   host     = "http://localhost:81"
-  username = "admin"
+  username = "admin@example.com"
   password = "changeme"
 }
 

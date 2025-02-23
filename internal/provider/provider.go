@@ -53,6 +53,7 @@ func (p *NginxProxyManagerProvider) Metadata(ctx context.Context, req provider.M
 
 func (p *NginxProxyManagerProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		MarkdownDescription: "Use the Nginx Proxy Manager (NPM) provider to interact with resources from Nginx Proxy Manager.",
 		Attributes: map[string]schema.Attribute{
 			"url": schema.StringAttribute{
 				MarkdownDescription: "Full Nginx Proxy Manager URL with protocol and port (e.g. `http://localhost:81`). You should **NOT** supply any path (`/api`), the SDK will use the appropriate paths. Can be specified via the `NGINXPROXYMANAGER_URL` environment variable.",
