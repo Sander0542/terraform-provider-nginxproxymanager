@@ -67,3 +67,42 @@ func (m *Stream) Write(ctx context.Context, stream *nginxproxymanager.GetStreams
 	m.Meta, tmpDiags = MapMetaFrom(ctx, stream.GetMeta())
 	diags.Append(tmpDiags...)
 }
+
+func (m *Stream) ToCreateRequest(_ context.Context, _ *diag.Diagnostics) *nginxproxymanager.CreateStreamRequest {
+	forwardHost := nginxproxymanager.GetStreams200ResponseInnerForwardingHost{}
+	forwardHost.String = m.ForwardingHost.ValueStringPointer()
+
+	request := nginxproxymanager.NewCreateStreamRequest(
+		m.IncomingPort.ValueInt64(),
+		forwardHost,
+		m.ForwardingPort.ValueInt64(),
+	)
+
+	request.SetTcpForwarding(m.TcpForwarding.ValueBool())
+	request.SetUdpForwarding(m.UdpForwarding.ValueBool())
+	certificateId := m.CertificateId.ValueInt64()
+	request.SetCertificateId(nginxproxymanager.GetProxyHosts200ResponseInnerCertificateId{
+		Int64: &certificateId,
+	})
+	request.SetMeta(map[string]interface{}{})
+
+	return request
+}
+
+func (m *Stream) ToUpdateRequest(_ context.Context, _ *diag.Diagnostics) *nginxproxymanager.UpdateStreamRequest {
+	forwardHost := nginxproxymanager.GetStreams200ResponseInnerForwardingHost{}
+	forwardHost.String = m.ForwardingHost.ValueStringPointer()
+
+	request := nginxproxymanager.NewUpdateStreamRequest()
+	request.SetIncomingPort(m.IncomingPort.ValueInt64())
+	request.SetForwardingHost(forwardHost)
+	request.SetForwardingPort(m.ForwardingPort.ValueInt64())
+	request.SetTcpForwarding(m.TcpForwarding.ValueBool())
+	request.SetUdpForwarding(m.UdpForwarding.ValueBool())
+	certificateId := m.CertificateId.ValueInt64()
+	request.SetCertificateId(nginxproxymanager.GetProxyHosts200ResponseInnerCertificateId{
+		Int64: &certificateId,
+	})
+
+	return request
+}
