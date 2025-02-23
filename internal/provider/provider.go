@@ -181,6 +181,7 @@ func (p *NginxProxyManagerProvider) Resources(ctx context.Context) []func() reso
 		NewCertificateCustomResource,
 		NewCertificateLetsencryptResource,
 		NewProxyHostResource,
+		NewRedirectionHostResource,
 	}
 }
 

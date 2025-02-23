@@ -87,3 +87,55 @@ func (m *RedirectionHost) Write(ctx context.Context, redirectionHost *nginxproxy
 	m.DomainNames, tmpDiags = ListDomainNamesFrom(ctx, redirectionHost.GetDomainNames())
 	diags.Append(tmpDiags...)
 }
+
+func (m *RedirectionHost) ToCreateRequest(ctx context.Context, diags *diag.Diagnostics) *nginxproxymanager.CreateRedirectionHostRequest {
+	domainNames, tmpDiags := DomainNameElementsAs(ctx, m.DomainNames)
+	diags.Append(tmpDiags...)
+
+	request := nginxproxymanager.NewCreateRedirectionHostRequest(
+		domainNames,
+		m.ForwardHttpCode.ValueInt64(),
+		m.ForwardScheme.ValueString(),
+		m.ForwardDomainName.ValueString(),
+	)
+
+	certificateId := m.CertificateId.ValueInt64()
+	request.SetCertificateId(nginxproxymanager.GetProxyHosts200ResponseInnerCertificateId{
+		Int64: &certificateId,
+	})
+	request.SetSslForced(m.SslForced.ValueBool())
+	request.SetHstsEnabled(m.HstsEnabled.ValueBool())
+	request.SetHstsSubdomains(m.HstsSubdomains.ValueBool())
+	request.SetHttp2Support(m.Http2Support.ValueBool())
+	request.SetPreservePath(m.PreservePath.ValueBool())
+	request.SetBlockExploits(m.BlockExploits.ValueBool())
+	request.SetAdvancedConfig(m.AdvancedConfig.ValueString())
+	request.SetMeta(map[string]interface{}{})
+
+	return request
+}
+
+func (m *RedirectionHost) ToUpdateRequest(ctx context.Context, diags *diag.Diagnostics) *nginxproxymanager.UpdateRedirectionHostRequest {
+	domainNames, tmpDiags := DomainNameElementsAs(ctx, m.DomainNames)
+	diags.Append(tmpDiags...)
+
+	request := nginxproxymanager.NewUpdateRedirectionHostRequest()
+
+	request.SetDomainNames(domainNames)
+	request.SetForwardHttpCode(m.ForwardHttpCode.ValueInt64())
+	request.SetForwardScheme(m.ForwardScheme.ValueString())
+	request.SetForwardDomainName(m.ForwardDomainName.ValueString())
+	certificateId := m.CertificateId.ValueInt64()
+	request.SetCertificateId(nginxproxymanager.GetProxyHosts200ResponseInnerCertificateId{
+		Int64: &certificateId,
+	})
+	request.SetSslForced(m.SslForced.ValueBool())
+	request.SetHstsEnabled(m.HstsEnabled.ValueBool())
+	request.SetHstsSubdomains(m.HstsSubdomains.ValueBool())
+	request.SetHttp2Support(m.Http2Support.ValueBool())
+	request.SetPreservePath(m.PreservePath.ValueBool())
+	request.SetBlockExploits(m.BlockExploits.ValueBool())
+	request.SetAdvancedConfig(m.AdvancedConfig.ValueString())
+
+	return request
+}
