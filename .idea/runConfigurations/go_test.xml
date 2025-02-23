@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go test" type="GoTestRunConfiguration" factoryName="Go Test">
+    <module name="terraform-provider-nginxproxymanager" />
+    <working_directory value="$PROJECT_DIR$" />
+    <envs>
+      <env name="TF_ACC" value="1" />
+      <env name="NGINXPROXYMANAGER_URL" value="http://localhost:81" />
+      <env name="NGINXPROXYMANAGER_USERNAME" value="admin@example.com" />
+      <env name="NGINXPROXYMANAGER_PASSWORD" value="changeme" />
+    </envs>
+    <kind value="DIRECTORY" />
+    <package value="github.com/hashicorp/terraform-provider-scaffolding-framework" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>

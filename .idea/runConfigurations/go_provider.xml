@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go provider" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="terraform-provider-nginxproxymanager" />
+    <working_directory value="$PROJECT_DIR$" />
+    <parameters value="-debug" />
+    <kind value="PACKAGE" />
+    <package value="github.com/sander0542/terraform-provider-nginxproxymanager" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <method v="2" />
+  </configuration>
+</component>
