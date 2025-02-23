@@ -5,6 +5,7 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -221,40 +222,23 @@ func (r *ProxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	hostEnabled := data.Enabled.ValueBool()
 
 	request := data.ToCreateRequest(ctx, &resp.Diagnostics)
-	response, _, err := r.client.ProxyHostsAPI.CreateProxyHost(r.auth).CreateProxyHostRequest(*request).Execute()
+	proxyHost, _, err := r.client.ProxyHostsAPI.CreateProxyHost(r.auth).CreateProxyHostRequest(*request).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create proxy host, got error: %s", err))
 		return
 	}
 
-	data.Write(ctx, response, &resp.Diagnostics)
+	data.Write(ctx, proxyHost, &resp.Diagnostics)
 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), data.Id)...)
 
-	enabledPath := path.Root("enabled")
-	if hostEnabled && !response.GetEnabled() {
-		enableResponse, _, err := r.client.ProxyHostsAPI.EnableProxyHost(r.auth, response.GetId()).Execute()
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(enabledPath, "Client Error", fmt.Sprintf("Unable to enable proxy host, got err: %s", err))
-			return
-		} else if enableResponse {
-			data.Enabled = types.BoolValue(hostEnabled)
-		} else {
-			resp.Diagnostics.AddAttributeError(enabledPath, "Server Error", "Unable to enable proxy host.")
-			return
-		}
-	} else if !hostEnabled && response.GetEnabled() {
-		disableResponse, _, err := r.client.ProxyHostsAPI.DisableProxyHost(r.auth, response.GetId()).Execute()
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(enabledPath, "Client Error", fmt.Sprintf("Unable to disable proxy host, got err: %s", err))
-			return
-		} else if disableResponse {
-			data.Enabled = types.BoolValue(hostEnabled)
-		} else {
-			resp.Diagnostics.AddAttributeError(enabledPath, "Server Error", "Unable to disable proxy host.")
-			return
-		}
+	err = r.toggleHost(proxyHost.GetId(), proxyHost.GetEnabled(), hostEnabled)
+	if err != nil {
+		resp.Diagnostics.AddAttributeError(path.Root("enabled"), "Client Error", fmt.Sprintf("Unable to update proxy host, got err: %s", err))
+		return
 	}
+
+	data.Enabled = types.BoolValue(hostEnabled)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
@@ -296,38 +280,21 @@ func (r *ProxyHostResource) Update(ctx context.Context, req resource.UpdateReque
 	hostEnabled := data.Enabled.ValueBool()
 
 	request := data.ToUpdateRequest(ctx, &resp.Diagnostics)
-	response, _, err := r.client.ProxyHostsAPI.UpdateProxyHost(r.auth, data.Id.ValueInt64()).UpdateProxyHostRequest(*request).Execute()
+	proxyHost, _, err := r.client.ProxyHostsAPI.UpdateProxyHost(r.auth, data.Id.ValueInt64()).UpdateProxyHostRequest(*request).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to update proxy host, got error: %s", err))
 		return
 	}
 
-	data.Write(ctx, response, &resp.Diagnostics)
+	data.Write(ctx, proxyHost, &resp.Diagnostics)
 
-	enabledPath := path.Root("enabled")
-	if hostEnabled && !response.GetEnabled() {
-		enableResponse, _, err := r.client.ProxyHostsAPI.EnableProxyHost(r.auth, response.GetId()).Execute()
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(enabledPath, "Client Error", fmt.Sprintf("Unable to enable proxy host, got err: %s", err))
-			return
-		} else if enableResponse {
-			data.Enabled = types.BoolValue(hostEnabled)
-		} else {
-			resp.Diagnostics.AddAttributeError(enabledPath, "Server Error", "Unable to enable proxy host.")
-			return
-		}
-	} else if !hostEnabled && response.GetEnabled() {
-		disableResponse, _, err := r.client.ProxyHostsAPI.DisableProxyHost(r.auth, response.GetId()).Execute()
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(enabledPath, "Client Error", fmt.Sprintf("Unable to disable proxy host, got err: %s", err))
-			return
-		} else if disableResponse {
-			data.Enabled = types.BoolValue(hostEnabled)
-		} else {
-			resp.Diagnostics.AddAttributeError(enabledPath, "Server Error", "Unable to disable proxy host.")
-			return
-		}
+	err = r.toggleHost(proxyHost.GetId(), proxyHost.GetEnabled(), hostEnabled)
+	if err != nil {
+		resp.Diagnostics.AddAttributeError(path.Root("enabled"), "Client Error", fmt.Sprintf("Unable to update proxy host, got err: %s", err))
+		return
 	}
+
+	data.Enabled = types.BoolValue(hostEnabled)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 
@@ -342,13 +309,13 @@ func (r *ProxyHostResource) Delete(ctx context.Context, req resource.DeleteReque
 		return
 	}
 
-	response, _, err := r.client.ProxyHostsAPI.DeleteProxyHost(r.auth, data.Id.ValueInt64()).Execute()
+	success, _, err := r.client.ProxyHostsAPI.DeleteProxyHost(r.auth, data.Id.ValueInt64()).Execute()
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to delete proxy host, got error: %s", err))
 		return
 	}
 
-	if !response {
+	if !success {
 		resp.Diagnostics.AddError("Server Error", "Unable to delete proxy host.")
 		return
 	}
@@ -369,4 +336,24 @@ func (r *ProxyHostResource) ImportState(ctx context.Context, req resource.Import
 
 	diags := resp.State.SetAttribute(ctx, path.Root("id"), types.Int64Value(proxyHost.GetId()))
 	resp.Diagnostics.Append(diags...)
+}
+
+func (r *ProxyHostResource) toggleHost(hostId int64, current bool, desired bool) error {
+	if desired && !current {
+		enableResponse, _, err := r.client.ProxyHostsAPI.EnableProxyHost(r.auth, hostId).Execute()
+		if err != nil {
+			return err
+		} else if !enableResponse {
+			return errors.New("unable to enable proxy host")
+		}
+	} else if !desired && current {
+		disableResponse, _, err := r.client.ProxyHostsAPI.DisableProxyHost(r.auth, hostId).Execute()
+		if err != nil {
+			return err
+		} else if !disableResponse {
+			return errors.New("unable to disable proxy host")
+		}
+	}
+
+	return nil
 }
