@@ -72,3 +72,42 @@ func (m *DeadHost) Write(ctx context.Context, deadHost *nginxproxymanager.GetDea
 	m.DomainNames, tmpDiags = ListDomainNamesFrom(ctx, deadHost.GetDomainNames())
 	diags.Append(tmpDiags...)
 }
+
+func (m *DeadHost) ToCreateRequest(ctx context.Context, diags *diag.Diagnostics) *nginxproxymanager.Create404HostRequest {
+	domainNames, tmpDiags := DomainNameElementsAs(ctx, m.DomainNames)
+	diags.Append(tmpDiags...)
+
+	request := nginxproxymanager.NewCreate404HostRequest(domainNames)
+	certificateId := m.CertificateId.ValueInt64()
+	request.SetCertificateId(nginxproxymanager.GetProxyHosts200ResponseInnerCertificateId{
+		Int64: &certificateId,
+	})
+	request.SetSslForced(m.SslForced.ValueBool())
+	request.SetHstsEnabled(m.HstsEnabled.ValueBool())
+	request.SetHstsSubdomains(m.HstsSubdomains.ValueBool())
+	request.SetHttp2Support(m.Http2Support.ValueBool())
+	request.SetAdvancedConfig(m.AdvancedConfig.ValueString())
+	request.SetMeta(map[string]interface{}{})
+
+	return request
+}
+
+func (m *DeadHost) ToUpdateRequest(ctx context.Context, diags *diag.Diagnostics) *nginxproxymanager.UpdateDeadHostRequest {
+	domainNames, tmpDiags := DomainNameElementsAs(ctx, m.DomainNames)
+	diags.Append(tmpDiags...)
+
+	request := nginxproxymanager.NewUpdateDeadHostRequest()
+	request.SetDomainNames(domainNames)
+	certificateId := m.CertificateId.ValueInt64()
+	request.SetCertificateId(nginxproxymanager.GetProxyHosts200ResponseInnerCertificateId{
+		Int64: &certificateId,
+	})
+	request.SetSslForced(m.SslForced.ValueBool())
+	request.SetHstsEnabled(m.HstsEnabled.ValueBool())
+	request.SetHstsSubdomains(m.HstsSubdomains.ValueBool())
+	request.SetHttp2Support(m.Http2Support.ValueBool())
+	request.SetAdvancedConfig(m.AdvancedConfig.ValueString())
+	request.SetMeta(map[string]interface{}{})
+
+	return request
+}

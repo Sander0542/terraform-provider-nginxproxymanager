@@ -180,6 +180,7 @@ func (p *NginxProxyManagerProvider) Resources(ctx context.Context) []func() reso
 	return []func() resource.Resource{
 		NewCertificateCustomResource,
 		NewCertificateLetsencryptResource,
+		NewDeadHostResource,
 		NewProxyHostResource,
 		NewRedirectionHostResource,
 		NewStreamResource,
