@@ -5,6 +5,7 @@ project {
   copyright_holder = "Sander Jochems"
 
   header_ignore = [
+    ".idea/**",
     ".github/**",
     "examples/**",
     "templates/**",

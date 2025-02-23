@@ -38,7 +38,7 @@ resource "nginxproxymanager_certificate_custom" "certificate" {
 - `expires_on` (String) The date and time the certificate expires.
 - `id` (Number) The ID of the certificate.
 - `modified_on` (String) The date and time the certificate was last modified.
-- `owner_user_id` (Number) The Id of the user that owns the proxy host.
+- `owner_user_id` (Number) The Id of the user that owns the certificate.
 
 ## Import
 

@@ -58,7 +58,7 @@ func (r *CertificateCustomResource) Schema(ctx context.Context, req resource.Sch
 				Computed:            true,
 			},
 			"owner_user_id": schema.Int64Attribute{
-				MarkdownDescription: "The Id of the user that owns the proxy host.",
+				MarkdownDescription: "The Id of the user that owns the certificate.",
 				Computed:            true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
