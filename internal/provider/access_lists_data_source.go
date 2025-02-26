@@ -64,30 +64,30 @@ func (d *AccessListsDataSource) Schema(ctx context.Context, req datasource.Schem
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"id": schema.Int64Attribute{
-										Description: "The Id of the authorization item.",
-										Computed:    true,
+										MarkdownDescription: "The Id of the authorization item.",
+										Computed:            true,
 									},
 									"created_on": schema.StringAttribute{
-										Description: "The date and time the authorization item was created.",
-										Computed:    true,
+										MarkdownDescription: "The date and time the authorization item was created.",
+										Computed:            true,
 									},
 									"modified_on": schema.StringAttribute{
-										Description: "The date and time the authorization item was last modified.",
-										Computed:    true,
+										MarkdownDescription: "The date and time the authorization item was last modified.",
+										Computed:            true,
 									},
 									"username": schema.StringAttribute{
-										Description: "The username of the authorization item.",
-										Computed:    true,
+										MarkdownDescription: "The username of the authorization item.",
+										Computed:            true,
 									},
 									"password_hint": schema.StringAttribute{
-										Description: "The password hint of the authorization item.",
-										Computed:    true,
-										Sensitive:   true,
+										MarkdownDescription: "The password hint of the authorization item.",
+										Computed:            true,
+										Sensitive:           true,
 									},
 									"meta": schema.MapAttribute{
-										Description: "The meta data associated with the authorization item.",
-										ElementType: types.StringType,
-										Computed:    true,
+										MarkdownDescription: "The meta data associated with the authorization item.",
+										ElementType:         types.StringType,
+										Computed:            true,
 									},
 								},
 							},
