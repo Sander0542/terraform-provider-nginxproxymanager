@@ -22,15 +22,13 @@ data "nginxproxymanager_settings" "settings" {}
 
 ### Read-Only
 
-- `settings` (Attributes Set) The settings. (see [below for nested schema](#nestedatt--settings))
+- `default_site` (Attributes) What to show when Nginx is hit with an unknown Host. (see [below for nested schema](#nestedatt--default_site))
 
-<a id="nestedatt--settings"></a>
-### Nested Schema for `settings`
+<a id="nestedatt--default_site"></a>
+### Nested Schema for `default_site`
 
 Read-Only:
 
-- `description` (String) The description of the setting.
-- `id` (String) The Id of the setting.
-- `meta` (Map of String) The meta data associated with the value.
-- `name` (String) The name of the setting.
-- `value` (String) The value of the setting.
+- `html` (String) HTML Content.
+- `page` (String) What to show when Nginx is hit with an unknown Host.
+- `redirect` (String) Redirect to.

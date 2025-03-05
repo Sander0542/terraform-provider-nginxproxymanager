@@ -11,19 +11,18 @@ import (
 )
 
 type Settings struct {
-	Settings types.Set `tfsdk:"settings"`
+	DefaultSite types.Object `tfsdk:"default_site"`
 }
 
-func (m *Settings) Write(ctx context.Context, settings *[]nginxproxymanager.GetSettings200ResponseInner, diags *diag.Diagnostics) {
-	var tmpDiags diag.Diagnostics
+func (m *Settings) Write(ctx context.Context, settings []nginxproxymanager.GetSettings200ResponseInner, diags *diag.Diagnostics) {
+	for _, setting := range settings {
+		var tmpDiags diag.Diagnostics
 
-	elements := make([]Setting, 0, len(*settings))
-	for _, g := range *settings {
-		item := Setting{}
-		item.WriteInner(ctx, &g, diags)
-		elements = append(elements, item)
+		switch setting.GetId() {
+		case "default-site":
+			m.DefaultSite, tmpDiags = ObjectSettingDefaultSiteFrom(ctx, setting)
+		}
+
+		diags.Append(tmpDiags...)
 	}
-
-	m.Settings, tmpDiags = types.SetValueFrom(ctx, Setting{}.GetType(), elements)
-	diags.Append(tmpDiags...)
 }

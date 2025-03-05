@@ -6,7 +6,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/internal/provider/models"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -33,32 +32,21 @@ func (d *SettingsDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Settings --- This data source can be used to get information on all settings.",
 		Attributes: map[string]schema.Attribute{
-			"settings": schema.SetNestedAttribute{
-				MarkdownDescription: "The settings.",
+			"default_site": schema.SingleNestedAttribute{
+				MarkdownDescription: "What to show when Nginx is hit with an unknown Host.",
 				Computed:            true,
-				NestedObject: schema.NestedAttributeObject{
-					Attributes: map[string]schema.Attribute{
-						"id": schema.StringAttribute{
-							MarkdownDescription: "The Id of the setting.",
-							Computed:            true,
-						},
-						"name": schema.StringAttribute{
-							MarkdownDescription: "The name of the setting.",
-							Computed:            true,
-						},
-						"description": schema.StringAttribute{
-							MarkdownDescription: "The description of the setting.",
-							Computed:            true,
-						},
-						"value": schema.StringAttribute{
-							MarkdownDescription: "The value of the setting.",
-							Computed:            true,
-						},
-						"meta": schema.MapAttribute{
-							MarkdownDescription: "The meta data associated with the value.",
-							ElementType:         types.StringType,
-							Computed:            true,
-						},
+				Attributes: map[string]schema.Attribute{
+					"page": schema.StringAttribute{
+						MarkdownDescription: "What to show when Nginx is hit with an unknown Host.",
+						Computed:            true,
+					},
+					"redirect": schema.StringAttribute{
+						MarkdownDescription: "Redirect to.",
+						Computed:            true,
+					},
+					"html": schema.StringAttribute{
+						MarkdownDescription: "HTML Content.",
+						Computed:            true,
 					},
 				},
 			},
@@ -88,7 +76,7 @@ func (d *SettingsDataSource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 
-	data.Write(ctx, &response, &resp.Diagnostics)
+	data.Write(ctx, response, &resp.Diagnostics)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
