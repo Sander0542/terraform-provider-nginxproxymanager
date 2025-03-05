@@ -29,15 +29,11 @@ func TestAccSettingsDataSource(t *testing.T) {
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
 						"data.nginxproxymanager_settings.test",
-						tfjsonpath.New("settings"),
-						knownvalue.SetExact([]knownvalue.Check{
-							knownvalue.ObjectExact(map[string]knownvalue.Check{
-								"id":          knownvalue.StringExact("default-site"),
-								"name":        knownvalue.StringExact("Default Site"),
-								"description": knownvalue.StringExact("What to show when Nginx is hit with an unknown Host"),
-								"value":       knownvalue.StringExact("congratulations"),
-								"meta":        knownvalue.Null(),
-							}),
+						tfjsonpath.New("default_site"),
+						knownvalue.ObjectExact(map[string]knownvalue.Check{
+							"page":     knownvalue.StringExact("congratulations"),
+							"html":     knownvalue.Null(),
+							"redirect": knownvalue.Null(),
 						}),
 					),
 				},

@@ -184,6 +184,7 @@ func (p *NginxProxyManagerProvider) Resources(ctx context.Context) []func() reso
 		NewDeadHostResource,
 		NewProxyHostResource,
 		NewRedirectionHostResource,
+		NewSettingsResource,
 		NewStreamResource,
 	}
 }
@@ -204,7 +205,6 @@ func (p *NginxProxyManagerProvider) DataSources(ctx context.Context) []func() da
 		NewProxyHostsDataSource,
 		NewRedirectionHostDataSource,
 		NewRedirectionHostsDataSource,
-		NewSettingDataSource,
 		NewSettingsDataSource,
 		NewStreamDataSource,
 		NewStreamsDataSource,
