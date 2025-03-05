@@ -184,6 +184,7 @@ func (p *NginxProxyManagerProvider) Resources(ctx context.Context) []func() reso
 		NewDeadHostResource,
 		NewProxyHostResource,
 		NewRedirectionHostResource,
+		NewSettingsResource,
 		NewStreamResource,
 	}
 }
