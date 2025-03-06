@@ -20,7 +20,7 @@ type Certificate struct {
 
 	Provider    types.String `tfsdk:"provider_name"`
 	NiceName    types.String `tfsdk:"nice_name"`
-	DomainNames types.List   `tfsdk:"domain_names"`
+	DomainNames types.Set    `tfsdk:"domain_names"`
 	ExpiresOn   types.String `tfsdk:"expires_on"`
 }
 
@@ -33,7 +33,7 @@ func (_ Certificate) GetType() attr.Type {
 		"meta":          types.MapType{ElemType: types.StringType},
 		"provider_name": types.StringType,
 		"nice_name":     types.StringType,
-		"domain_names":  types.ListType{ElemType: types.StringType},
+		"domain_names":  types.SetType{ElemType: types.StringType},
 		"expires_on":    types.StringType,
 	})
 }
@@ -50,7 +50,7 @@ func (m *Certificate) Write(ctx context.Context, certificate *nginxproxymanager.
 	m.NiceName = types.StringValue(certificate.GetNiceName())
 	m.ExpiresOn = types.StringValue(certificate.GetExpiresOn())
 
-	m.DomainNames, tmpDiags = ListDomainNamesFrom(ctx, certificate.GetDomainNames())
+	m.DomainNames, tmpDiags = SetDomainNamesFrom(ctx, certificate.GetDomainNames())
 	diags.Append(tmpDiags...)
 
 	meta, err := certificate.GetMeta().ToMap()

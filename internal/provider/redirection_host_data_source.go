@@ -49,7 +49,7 @@ func (d *RedirectionHostDataSource) Schema(ctx context.Context, req datasource.S
 				MarkdownDescription: "The Id of the user that owns the redirection host.",
 				Computed:            true,
 			},
-			"domain_names": schema.ListAttribute{
+			"domain_names": schema.SetAttribute{
 				MarkdownDescription: "The domain names associated with the redirection host.",
 				Computed:            true,
 				ElementType:         types.StringType,

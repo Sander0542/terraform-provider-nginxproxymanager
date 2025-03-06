@@ -70,7 +70,7 @@ func (r *RedirectionHostResource) Schema(ctx context.Context, req resource.Schem
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"domain_names": schema.ListAttribute{
+			"domain_names": schema.SetAttribute{
 				MarkdownDescription: "The domain names associated with the redirection host.",
 				Required:            true,
 				ElementType:         types.StringType,

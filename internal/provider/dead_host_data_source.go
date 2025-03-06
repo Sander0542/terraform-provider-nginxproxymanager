@@ -49,7 +49,7 @@ func (d *DeadHostDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 				MarkdownDescription: "The Id of the user that owns the dead host.",
 				Computed:            true,
 			},
-			"domain_names": schema.ListAttribute{
+			"domain_names": schema.SetAttribute{
 				MarkdownDescription: "The domain names associated with the dead host.",
 				Computed:            true,
 				ElementType:         types.StringType,

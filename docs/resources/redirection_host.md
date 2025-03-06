@@ -37,7 +37,7 @@ resource "nginxproxymanager_redirection_host" "host" {
 
 ### Required
 
-- `domain_names` (List of String) The domain names associated with the redirection host.
+- `domain_names` (Set of String) The domain names associated with the redirection host.
 - `forward_domain_name` (String) The domain name used to forward requests to the redirection host.
 
 ### Optional

@@ -35,7 +35,7 @@ Read-Only:
 - `block_exploits` (Boolean) Whether exploits are blocked for the redirection host.
 - `certificate_id` (Number) The Id of the certificate used by the redirection host.
 - `created_on` (String) The date and time the redirection host was created.
-- `domain_names` (List of String) The domain names associated with the redirection host.
+- `domain_names` (Set of String) The domain names associated with the redirection host.
 - `enabled` (Boolean) Whether the redirection host is enabled.
 - `forward_domain_name` (String) The domain name used to forward requests to the redirection host.
 - `forward_http_code` (Number) The HTTP code used to forward requests to the redirection host.

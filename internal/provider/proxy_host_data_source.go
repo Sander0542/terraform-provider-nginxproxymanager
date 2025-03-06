@@ -49,7 +49,7 @@ func (d *ProxyHostDataSource) Schema(ctx context.Context, req datasource.SchemaR
 				MarkdownDescription: "The Id of the user that owns the proxy host.",
 				Computed:            true,
 			},
-			"domain_names": schema.ListAttribute{
+			"domain_names": schema.SetAttribute{
 				MarkdownDescription: "The domain names associated with the proxy host.",
 				Computed:            true,
 				ElementType:         types.StringType,

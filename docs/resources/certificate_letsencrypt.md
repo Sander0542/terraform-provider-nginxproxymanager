@@ -31,7 +31,7 @@ resource "nginxproxymanager_certificate_letsencrypt" "certificate" {
 
 ### Required
 
-- `domain_names` (List of String) The domain names associated with the certificate.
+- `domain_names` (Set of String) The domain names associated with the certificate.
 - `letsencrypt_agree` (Boolean) Whether you agree to the [Let's Encrypt Terms of Service](https://letsencrypt.org/repository/).
 - `letsencrypt_email` (String) The email address to use for the Let's Encrypt certificate.
 

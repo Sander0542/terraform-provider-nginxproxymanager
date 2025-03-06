@@ -55,7 +55,7 @@ resource "nginxproxymanager_proxy_host" "host" {
 
 ### Required
 
-- `domain_names` (List of String) The domain names associated with the proxy host.
+- `domain_names` (Set of String) The domain names associated with the proxy host.
 - `forward_host` (String) The host used to forward requests to the proxy host.
 - `forward_port` (Number) The port used to forward requests to the proxy host.
 - `forward_scheme` (String) The scheme used to forward requests to the proxy host. Can be either `http` or `https`.

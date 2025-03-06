@@ -34,7 +34,7 @@ resource "nginxproxymanager_certificate_custom" "certificate" {
 ### Read-Only
 
 - `created_on` (String) The date and time the certificate was created.
-- `domain_names` (List of String) The domain names associated with the certificate.
+- `domain_names` (Set of String) The domain names associated with the certificate.
 - `expires_on` (String) The date and time the certificate expires.
 - `id` (Number) The ID of the certificate.
 - `modified_on` (String) The date and time the certificate was last modified.
