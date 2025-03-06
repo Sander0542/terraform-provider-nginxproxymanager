@@ -21,7 +21,7 @@ type User struct {
 	Email       types.String `tfsdk:"email"`
 	Avatar      types.String `tfsdk:"avatar"`
 	IsDisabled  types.Bool   `tfsdk:"is_disabled"`
-	Roles       types.List   `tfsdk:"roles"`
+	Roles       types.Set    `tfsdk:"roles"`
 	Permissions types.Object `tfsdk:"permissions"`
 }
 
@@ -35,7 +35,7 @@ func (_ User) GetType() attr.Type {
 		"email":       types.StringType,
 		"avatar":      types.StringType,
 		"is_disabled": types.BoolType,
-		"roles":       types.ListType{ElemType: types.StringType},
+		"roles":       types.SetType{ElemType: types.StringType},
 		"permissions": types.ObjectType{AttrTypes: UserPermissions{}.GetType().AttributeTypes()},
 	})
 }
@@ -53,7 +53,7 @@ func (m *User) Write(ctx context.Context, user *nginxproxymanager.GetAccessLists
 	m.Avatar = types.StringValue(user.GetAvatar())
 	m.IsDisabled = types.BoolValue(user.GetIsDisabled())
 
-	m.Roles, tmpDiags = types.ListValueFrom(ctx, types.StringType, user.GetRoles())
+	m.Roles, tmpDiags = types.SetValueFrom(ctx, types.StringType, user.GetRoles())
 	diags.Append(tmpDiags...)
 
 	if user.HasPermissions() {

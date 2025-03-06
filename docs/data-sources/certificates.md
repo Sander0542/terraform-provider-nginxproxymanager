@@ -30,7 +30,7 @@ data "nginxproxymanager_certificates" "certificates" {}
 Read-Only:
 
 - `created_on` (String) The date and time the certificate was created.
-- `domain_names` (List of String) The domain names associated with the certificate.
+- `domain_names` (Set of String) The domain names associated with the certificate.
 - `expires_on` (String) The date and time the certificate expires.
 - `id` (Number) The Id of the certificate.
 - `meta` (Map of String, Sensitive) The meta data associated with the certificate.

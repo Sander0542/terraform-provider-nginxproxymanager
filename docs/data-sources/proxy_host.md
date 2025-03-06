@@ -35,7 +35,7 @@ data "nginxproxymanager_proxy_host" "host" {
 - `caching_enabled` (Boolean) Whether caching is enabled for the proxy host.
 - `certificate_id` (Number) The Id of the certificate used by the proxy host.
 - `created_on` (String) The date and time the proxy host was created.
-- `domain_names` (List of String) The domain names associated with the proxy host.
+- `domain_names` (Set of String) The domain names associated with the proxy host.
 - `enabled` (Boolean) Whether the proxy host is enabled.
 - `forward_host` (String) The host used to forward requests to the proxy host.
 - `forward_port` (Number) The port used to forward requests to the proxy host.

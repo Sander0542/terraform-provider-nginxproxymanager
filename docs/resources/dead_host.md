@@ -30,7 +30,7 @@ resource "nginxproxymanager_dead_host" "host" {
 
 ### Required
 
-- `domain_names` (List of String) The domain names associated with the dead host.
+- `domain_names` (Set of String) The domain names associated with the dead host.
 
 ### Optional
 

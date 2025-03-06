@@ -70,7 +70,7 @@ func (d *UsersDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 							MarkdownDescription: "Whether the user is disabled.",
 							Computed:            true,
 						},
-						"roles": schema.ListAttribute{
+						"roles": schema.SetAttribute{
 							MarkdownDescription: "The roles of the user.",
 							Computed:            true,
 							ElementType:         types.StringType,

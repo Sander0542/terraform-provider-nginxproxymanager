@@ -18,7 +18,7 @@ type CertificateLetsencrypt struct {
 	ExpiresOn   types.String `tfsdk:"expires_on"`
 	OwnerUserId types.Int64  `tfsdk:"owner_user_id"`
 
-	DomainNames            types.List   `tfsdk:"domain_names"`
+	DomainNames            types.Set    `tfsdk:"domain_names"`
 	LetsencryptEmail       types.String `tfsdk:"letsencrypt_email"`
 	LetsencryptAgree       types.Bool   `tfsdk:"letsencrypt_agree"`
 	DnsChallenge           types.Bool   `tfsdk:"dns_challenge"`
@@ -34,7 +34,7 @@ func (_ CertificateLetsencrypt) GetType() attr.Type {
 		"modified_on":              types.StringType,
 		"expires_on":               types.StringType,
 		"owner_user_id":            types.Int64Type,
-		"domain_names":             types.ListType{ElemType: types.StringType},
+		"domain_names":             types.SetType{ElemType: types.StringType},
 		"letsencrypt_email":        types.StringType,
 		"letsencrypt_agree":        types.BoolType,
 		"dns_challenge":            types.BoolType,
@@ -85,7 +85,7 @@ func (m *CertificateLetsencrypt) Write(ctx context.Context, certificate *nginxpr
 		m.PropagationSeconds = types.Int64Null()
 	}
 
-	m.DomainNames, tmpDiags = ListDomainNamesFrom(ctx, certificate.GetDomainNames())
+	m.DomainNames, tmpDiags = SetDomainNamesFrom(ctx, certificate.GetDomainNames())
 	diags.Append(tmpDiags...)
 }
 

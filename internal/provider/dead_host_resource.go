@@ -66,7 +66,7 @@ func (r *DeadHostResource) Schema(ctx context.Context, req resource.SchemaReques
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"domain_names": schema.ListAttribute{
+			"domain_names": schema.SetAttribute{
 				MarkdownDescription: "The domain names associated with the dead host.",
 				Required:            true,
 				ElementType:         types.StringType,

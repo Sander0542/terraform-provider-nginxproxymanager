@@ -62,7 +62,7 @@ func (d *CertificatesDataSource) Schema(ctx context.Context, req datasource.Sche
 							MarkdownDescription: "The nice name of the certificate.",
 							Computed:            true,
 						},
-						"domain_names": schema.ListAttribute{
+						"domain_names": schema.SetAttribute{
 							MarkdownDescription: "The domain names associated with the certificate.",
 							Computed:            true,
 							ElementType:         types.StringType,

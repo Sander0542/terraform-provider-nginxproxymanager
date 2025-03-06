@@ -18,7 +18,7 @@ type RedirectionHost struct {
 	OwnerUserId types.Int64  `tfsdk:"owner_user_id"`
 	Meta        types.Map    `tfsdk:"meta"`
 
-	DomainNames       types.List   `tfsdk:"domain_names"`
+	DomainNames       types.Set    `tfsdk:"domain_names"`
 	ForwardScheme     types.String `tfsdk:"forward_scheme"`
 	ForwardDomainName types.String `tfsdk:"forward_domain_name"`
 	ForwardHttpCode   types.Int64  `tfsdk:"forward_http_code"`
@@ -40,7 +40,7 @@ func (_ RedirectionHost) GetType() attr.Type {
 		"modified_on":         types.StringType,
 		"owner_user_id":       types.Int64Type,
 		"meta":                types.MapType{ElemType: types.StringType},
-		"domain_names":        types.ListType{ElemType: types.StringType},
+		"domain_names":        types.SetType{ElemType: types.StringType},
 		"forward_scheme":      types.StringType,
 		"forward_domain_name": types.StringType,
 		"forward_http_code":   types.Int64Type,
@@ -84,7 +84,7 @@ func (m *RedirectionHost) Write(ctx context.Context, redirectionHost *nginxproxy
 	m.Meta, tmpDiags = MapMetaFrom(ctx, redirectionHost.GetMeta())
 	diags.Append(tmpDiags...)
 
-	m.DomainNames, tmpDiags = ListDomainNamesFrom(ctx, redirectionHost.GetDomainNames())
+	m.DomainNames, tmpDiags = SetDomainNamesFrom(ctx, redirectionHost.GetDomainNames())
 	diags.Append(tmpDiags...)
 }
 

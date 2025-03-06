@@ -31,7 +31,7 @@ data "nginxproxymanager_user_me" "user_me" {}
 - `name` (String) The name of the user.
 - `nickname` (String) The nickname of the user.
 - `permissions` (Attributes) The permissions of the user. (see [below for nested schema](#nestedatt--permissions))
-- `roles` (List of String) The roles of the user.
+- `roles` (Set of String) The roles of the user.
 
 <a id="nestedatt--permissions"></a>
 ### Nested Schema for `permissions`

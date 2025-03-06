@@ -31,7 +31,7 @@ data "nginxproxymanager_dead_host" "host" {
 - `advanced_config` (String) The advanced configuration used by the dead host.
 - `certificate_id` (Number) The Id of the certificate used by the dead host.
 - `created_on` (String) The date and time the dead host was created.
-- `domain_names` (List of String) The domain names associated with the dead host.
+- `domain_names` (Set of String) The domain names associated with the dead host.
 - `enabled` (Boolean) Whether the dead host is enabled.
 - `hsts_enabled` (Boolean) Whether HSTS is enabled for the dead host.
 - `hsts_subdomains` (Boolean) Whether HSTS is enabled for subdomains of the dead host.

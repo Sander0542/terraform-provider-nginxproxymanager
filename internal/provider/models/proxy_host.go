@@ -18,7 +18,7 @@ type ProxyHost struct {
 	OwnerUserId types.Int64  `tfsdk:"owner_user_id"`
 	Meta        types.Map    `tfsdk:"meta"`
 
-	DomainNames           types.List   `tfsdk:"domain_names"`
+	DomainNames           types.Set    `tfsdk:"domain_names"`
 	ForwardScheme         types.String `tfsdk:"forward_scheme"`
 	ForwardHost           types.String `tfsdk:"forward_host"`
 	ForwardPort           types.Int64  `tfsdk:"forward_port"`
@@ -43,7 +43,7 @@ func (_ ProxyHost) GetType() attr.Type {
 		"modified_on":             types.StringType,
 		"owner_user_id":           types.Int64Type,
 		"meta":                    types.MapType{ElemType: types.StringType},
-		"domain_names":            types.ListType{ElemType: types.StringType},
+		"domain_names":            types.SetType{ElemType: types.StringType},
 		"forward_scheme":          types.StringType,
 		"forward_host":            types.StringType,
 		"forward_port":            types.Int64Type,
@@ -95,7 +95,7 @@ func (m *ProxyHost) Write(ctx context.Context, proxyHost *nginxproxymanager.GetP
 	m.Meta, tmpDiags = MapMetaFrom(ctx, proxyHost.GetMeta())
 	diags.Append(tmpDiags...)
 
-	m.DomainNames, tmpDiags = ListDomainNamesFrom(ctx, proxyHost.GetDomainNames())
+	m.DomainNames, tmpDiags = SetDomainNamesFrom(ctx, proxyHost.GetDomainNames())
 	diags.Append(tmpDiags...)
 
 	m.Locations, tmpDiags = SetProxyHostLocationsFrom(ctx, proxyHost.GetLocations())

@@ -18,7 +18,7 @@ type DeadHost struct {
 	OwnerUserId types.Int64  `tfsdk:"owner_user_id"`
 	Meta        types.Map    `tfsdk:"meta"`
 
-	DomainNames    types.List   `tfsdk:"domain_names"`
+	DomainNames    types.Set    `tfsdk:"domain_names"`
 	CertificateId  types.Int64  `tfsdk:"certificate_id"`
 	SslForced      types.Bool   `tfsdk:"ssl_forced"`
 	HstsEnabled    types.Bool   `tfsdk:"hsts_enabled"`
@@ -35,7 +35,7 @@ func (_ DeadHost) GetType() attr.Type {
 		"modified_on":     types.StringType,
 		"owner_user_id":   types.Int64Type,
 		"meta":            types.MapType{ElemType: types.StringType},
-		"domain_names":    types.ListType{ElemType: types.StringType},
+		"domain_names":    types.SetType{ElemType: types.StringType},
 		"certificate_id":  types.Int64Type,
 		"ssl_forced":      types.BoolType,
 		"hsts_enabled":    types.BoolType,
@@ -69,7 +69,7 @@ func (m *DeadHost) Write(ctx context.Context, deadHost *nginxproxymanager.GetDea
 	m.Meta, tmpDiags = MapMetaFrom(ctx, deadHost.GetMeta())
 	diags.Append(tmpDiags...)
 
-	m.DomainNames, tmpDiags = ListDomainNamesFrom(ctx, deadHost.GetDomainNames())
+	m.DomainNames, tmpDiags = SetDomainNamesFrom(ctx, deadHost.GetDomainNames())
 	diags.Append(tmpDiags...)
 }
 

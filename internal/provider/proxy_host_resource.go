@@ -71,7 +71,7 @@ func (r *ProxyHostResource) Schema(ctx context.Context, req resource.SchemaReque
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"domain_names": schema.ListAttribute{
+			"domain_names": schema.SetAttribute{
 				MarkdownDescription: "The domain names associated with the proxy host.",
 				Required:            true,
 				ElementType:         types.StringType,

@@ -20,7 +20,7 @@ type CertificateCustom struct {
 	Name           types.String `tfsdk:"name"`
 	Certificate    types.String `tfsdk:"certificate"`
 	CertificateKey types.String `tfsdk:"certificate_key"`
-	DomainNames    types.List   `tfsdk:"domain_names"`
+	DomainNames    types.Set    `tfsdk:"domain_names"`
 	ExpiresOn      types.String `tfsdk:"expires_on"`
 }
 
@@ -33,7 +33,7 @@ func (_ CertificateCustom) GetType() attr.Type {
 		"name":            types.StringType,
 		"certificate":     types.StringType,
 		"certificate_key": types.StringType,
-		"domain_names":    types.ListType{ElemType: types.StringType},
+		"domain_names":    types.SetType{ElemType: types.StringType},
 		"expires_on":      types.StringType,
 	})
 }
@@ -60,7 +60,7 @@ func (m *CertificateCustom) Write(ctx context.Context, certificate *nginxproxyma
 	}
 	m.ExpiresOn = types.StringValue(certificate.GetExpiresOn())
 
-	m.DomainNames, tmpDiags = ListDomainNamesFrom(ctx, certificate.GetDomainNames())
+	m.DomainNames, tmpDiags = SetDomainNamesFrom(ctx, certificate.GetDomainNames())
 	diags.Append(tmpDiags...)
 }
 
