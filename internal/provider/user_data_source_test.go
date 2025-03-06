@@ -70,7 +70,7 @@ func TestAccUserDataSource(t *testing.T) {
 					statecheck.ExpectKnownValue(
 						"data.nginxproxymanager_user.test",
 						tfjsonpath.New("roles"),
-						knownvalue.ListExact([]knownvalue.Check{
+						knownvalue.SetExact([]knownvalue.Check{
 							knownvalue.StringExact("admin"),
 						}),
 					),

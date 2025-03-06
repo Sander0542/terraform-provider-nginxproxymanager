@@ -40,7 +40,7 @@ func TestAccUsersDataSource(t *testing.T) {
 								"email":       knownvalue.StringExact("admin@example.com"),
 								"avatar":      knownvalue.StringExact(""),
 								"is_disabled": knownvalue.Bool(false),
-								"roles": knownvalue.ListExact([]knownvalue.Check{
+								"roles": knownvalue.SetExact([]knownvalue.Check{
 									knownvalue.StringExact("admin"),
 								}),
 								"permissions": knownvalue.ObjectExact(map[string]knownvalue.Check{
