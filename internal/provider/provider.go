@@ -172,6 +172,7 @@ func (p *NginxProxyManagerProvider) Configure(ctx context.Context, req provider.
 
 	resp.DataSourceData = &providerData
 	resp.ResourceData = &providerData
+	resp.EphemeralResourceData = &providerData
 
 	tflog.Info(ctx, "Successfully initialized the Nginx Proxy Manager API client")
 }
@@ -190,7 +191,9 @@ func (p *NginxProxyManagerProvider) Resources(ctx context.Context) []func() reso
 }
 
 func (p *NginxProxyManagerProvider) EphemeralResources(ctx context.Context) []func() ephemeral.EphemeralResource {
-	return []func() ephemeral.EphemeralResource{}
+	return []func() ephemeral.EphemeralResource{
+		NewUserTokenEphemeralResource,
+	}
 }
 
 func (p *NginxProxyManagerProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
