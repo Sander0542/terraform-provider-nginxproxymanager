@@ -19,7 +19,7 @@ type SettingDefaultSite struct {
 	Html     types.String `tfsdk:"html"`
 }
 
-func (_ SettingDefaultSite) GetType() attr.TypeWithAttributeTypes {
+func (SettingDefaultSite) GetType() attr.TypeWithAttributeTypes {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"page":     types.StringType,
 		"redirect": types.StringType,

@@ -27,7 +27,7 @@ type CertificateLetsencrypt struct {
 	PropagationSeconds     types.Int64  `tfsdk:"propagation_seconds"`
 }
 
-func (_ CertificateLetsencrypt) GetType() attr.Type {
+func (CertificateLetsencrypt) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":                       types.Int64Type,
 		"created_on":               types.StringType,

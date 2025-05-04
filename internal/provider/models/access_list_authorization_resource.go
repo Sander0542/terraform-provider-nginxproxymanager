@@ -37,7 +37,7 @@ func (m *authorizationCredential) matches(username string, passwordHint string) 
 	return true
 }
 
-func (_ AccessListAuthorizationResource) GetType() attr.Type {
+func (AccessListAuthorizationResource) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"username": types.StringType,
 		"password": types.StringType,

@@ -25,7 +25,7 @@ type User struct {
 	Permissions types.Object `tfsdk:"permissions"`
 }
 
-func (_ User) GetType() attr.Type {
+func (User) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":          types.Int64Type,
 		"created_on":  types.StringType,

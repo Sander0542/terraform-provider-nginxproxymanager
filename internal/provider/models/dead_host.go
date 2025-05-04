@@ -28,7 +28,7 @@ type DeadHost struct {
 	Enabled        types.Bool   `tfsdk:"enabled"`
 }
 
-func (_ DeadHost) GetType() attr.Type {
+func (DeadHost) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":              types.Int64Type,
 		"created_on":      types.StringType,
