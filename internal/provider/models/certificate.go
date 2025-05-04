@@ -24,7 +24,7 @@ type Certificate struct {
 	ExpiresOn   types.String `tfsdk:"expires_on"`
 }
 
-func (_ Certificate) GetType() attr.Type {
+func (Certificate) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":            types.Int64Type,
 		"created_on":    types.StringType,

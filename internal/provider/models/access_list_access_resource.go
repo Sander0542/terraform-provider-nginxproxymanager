@@ -16,7 +16,7 @@ type AccessListAccessResource struct {
 	Directive types.String `tfsdk:"directive"`
 }
 
-func (_ AccessListAccessResource) GetType() attr.Type {
+func (AccessListAccessResource) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"address":   types.StringType,
 		"directive": types.StringType,

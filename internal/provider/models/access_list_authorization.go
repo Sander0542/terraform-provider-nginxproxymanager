@@ -21,7 +21,7 @@ type AccessListAuthorization struct {
 	PasswordHint types.String `tfsdk:"password_hint"`
 }
 
-func (_ AccessListAuthorization) GetType() attr.Type {
+func (AccessListAuthorization) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":            types.Int64Type,
 		"created_on":    types.StringType,

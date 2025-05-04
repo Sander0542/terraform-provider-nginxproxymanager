@@ -25,7 +25,7 @@ type AccessList struct {
 	SatisfyAny     types.Bool   `tfsdk:"satisfy_any"`
 }
 
-func (_ AccessList) GetType() attr.Type {
+func (AccessList) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"id":             types.Int64Type,
 		"created_on":     types.StringType,

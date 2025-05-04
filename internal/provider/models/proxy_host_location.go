@@ -19,7 +19,7 @@ type ProxyHostLocation struct {
 	AdvancedConfig types.String `tfsdk:"advanced_config"`
 }
 
-func (_ ProxyHostLocation) GetType() attr.Type {
+func (ProxyHostLocation) GetType() attr.Type {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"path":            types.StringType,
 		"forward_scheme":  types.StringType,

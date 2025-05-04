@@ -21,7 +21,7 @@ type UserPermissions struct {
 	Visibility       types.String `tfsdk:"visibility"`
 }
 
-func (_ UserPermissions) GetType() attr.TypeWithAttributeTypes {
+func (UserPermissions) GetType() attr.TypeWithAttributeTypes {
 	return types.ObjectType{}.WithAttributeTypes(map[string]attr.Type{
 		"visibility":        types.StringType,
 		"access_lists":      types.StringType,
