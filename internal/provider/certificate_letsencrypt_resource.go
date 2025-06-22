@@ -21,6 +21,7 @@ import (
 	"github.com/sander0542/nginxproxymanager-go"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/internal/provider/models"
 	"strconv"
+	"sync"
 )
 
 var _ resource.Resource = &CertificateLetsencryptResource{}
@@ -33,6 +34,7 @@ func NewCertificateLetsencryptResource() resource.Resource {
 type CertificateLetsencryptResource struct {
 	client *nginxproxymanager.APIClient
 	auth   context.Context
+	mutex  *sync.Mutex
 }
 
 func (r *CertificateLetsencryptResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -140,6 +142,7 @@ func (r *CertificateLetsencryptResource) Configure(ctx context.Context, req reso
 	if data := resourceConfigure(ctx, req, resp); data != nil {
 		r.client = data.Client
 		r.auth = data.Auth
+		r.mutex = &data.CertificateMutex
 	}
 }
 
@@ -151,6 +154,9 @@ func (r *CertificateLetsencryptResource) Create(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
 
 	certificateRequest := data.ToCreateRequest(ctx, &resp.Diagnostics)
 	certificate, _, err := r.client.CertificatesAPI.CreateCertificate(r.auth).CreateCertificateRequest(*certificateRequest).Execute()
