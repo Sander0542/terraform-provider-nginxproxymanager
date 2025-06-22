@@ -43,9 +43,9 @@ func (r *UserTokenEphemeralResource) Schema(ctx context.Context, _ ephemeral.Sch
 }
 
 func (r *UserTokenEphemeralResource) Configure(ctx context.Context, req ephemeral.ConfigureRequest, resp *ephemeral.ConfigureResponse) {
-	if auth, client := ephemeralResourceConfigure(ctx, req, resp); client != nil {
-		r.client = client
-		r.auth = auth
+	if data := ephemeralResourceConfigure(ctx, req, resp); data != nil {
+		r.client = data.Client
+		r.auth = data.Auth
 	}
 }
 

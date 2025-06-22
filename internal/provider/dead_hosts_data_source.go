@@ -100,9 +100,9 @@ func (d *DeadHostsDataSource) Schema(ctx context.Context, req datasource.SchemaR
 }
 
 func (d *DeadHostsDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
-	if auth, client := dataSourceConfigure(ctx, req, resp); client != nil {
-		d.client = client
-		d.auth = auth
+	if data := dataSourceConfigure(ctx, req, resp); data != nil {
+		d.client = data.Client
+		d.auth = data.Auth
 	}
 }
 
