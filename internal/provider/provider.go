@@ -7,6 +7,7 @@ import (
 	"context"
 	"net/url"
 	"os"
+	"sync"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -42,8 +43,9 @@ type NginxProxyManagerProviderModel struct {
 }
 
 type NginxProxyManagerProviderData struct {
-	Client *nginxproxymanager.APIClient
-	Auth   context.Context
+	Client           *nginxproxymanager.APIClient
+	Auth             context.Context
+	CertificateMutex sync.Mutex
 }
 
 func (p *NginxProxyManagerProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
