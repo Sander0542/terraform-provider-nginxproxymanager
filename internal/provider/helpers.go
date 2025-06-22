@@ -9,13 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/sander0542/nginxproxymanager-go"
 )
 
-func resourceConfigure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) (context.Context, *nginxproxymanager.APIClient) {
+func resourceConfigure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) *NginxProxyManagerProviderData {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
-		return nil, nil
+		return nil
 	}
 
 	providerData, ok := req.ProviderData.(*NginxProxyManagerProviderData)
@@ -25,16 +24,16 @@ func resourceConfigure(_ context.Context, req resource.ConfigureRequest, resp *r
 			fmt.Sprintf("Expected *NginxProxyManagerProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
-		return nil, nil
+		return nil
 	}
 
-	return providerData.Auth, providerData.Client
+	return providerData
 }
 
-func dataSourceConfigure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) (context.Context, *nginxproxymanager.APIClient) {
+func dataSourceConfigure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) *NginxProxyManagerProviderData {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
-		return nil, nil
+		return nil
 	}
 
 	providerData, ok := req.ProviderData.(*NginxProxyManagerProviderData)
@@ -44,16 +43,16 @@ func dataSourceConfigure(_ context.Context, req datasource.ConfigureRequest, res
 			fmt.Sprintf("Expected *NginxProxyManagerProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
-		return nil, nil
+		return nil
 	}
 
-	return providerData.Auth, providerData.Client
+	return providerData
 }
 
-func ephemeralResourceConfigure(_ context.Context, req ephemeral.ConfigureRequest, resp *ephemeral.ConfigureResponse) (context.Context, *nginxproxymanager.APIClient) {
+func ephemeralResourceConfigure(_ context.Context, req ephemeral.ConfigureRequest, resp *ephemeral.ConfigureResponse) *NginxProxyManagerProviderData {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
-		return nil, nil
+		return nil
 	}
 
 	providerData, ok := req.ProviderData.(*NginxProxyManagerProviderData)
@@ -63,8 +62,8 @@ func ephemeralResourceConfigure(_ context.Context, req ephemeral.ConfigureReques
 			fmt.Sprintf("Expected *NginxProxyManagerProviderData, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
-		return nil, nil
+		return nil
 	}
 
-	return providerData.Auth, providerData.Client
+	return providerData
 }

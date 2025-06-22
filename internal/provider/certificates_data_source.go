@@ -85,9 +85,9 @@ func (d *CertificatesDataSource) Schema(ctx context.Context, req datasource.Sche
 }
 
 func (d *CertificatesDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
-	if auth, client := dataSourceConfigure(ctx, req, resp); client != nil {
-		d.client = client
-		d.auth = auth
+	if data := dataSourceConfigure(ctx, req, resp); data != nil {
+		d.client = data.Client
+		d.auth = data.Auth
 	}
 }
 
