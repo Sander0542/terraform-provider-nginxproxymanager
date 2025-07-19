@@ -15,7 +15,7 @@ Use the Nginx Proxy Manager (NPM) provider to interact with resources from Nginx
 ```terraform
 # Configuration-based authentication
 provider "nginxproxymanager" {
-  host     = "http://localhost:81"
+  url      = "http://localhost:81"
   username = "admin@example.com"
   password = "changeme"
 }
