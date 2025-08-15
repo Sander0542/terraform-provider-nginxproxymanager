@@ -100,6 +100,8 @@ github.com/hashicorp/terraform-plugin-testing v1.13.1 h1:0nhSm8lngGTggqXptU4vunF
 github.com/hashicorp/terraform-plugin-testing v1.13.1/go.mod h1:b/hl6YZLm9fjeud/3goqh/gdqhZXbRfbHMkEiY9dZwc=
 github.com/hashicorp/terraform-plugin-testing v1.13.2 h1:mSotG4Odl020vRjIenA3rggwo6Kg6XCKIwtRhYgp+/M=
 github.com/hashicorp/terraform-plugin-testing v1.13.2/go.mod h1:WHQ9FDdiLoneey2/QHpGM/6SAYf4A7AZazVg7230pLE=
+github.com/hashicorp/terraform-plugin-testing v1.13.3 h1:QLi/khB8Z0a5L54AfPrHukFpnwsGL8cwwswj4RZduCo=
+github.com/hashicorp/terraform-plugin-testing v1.13.3/go.mod h1:WHQ9FDdiLoneey2/QHpGM/6SAYf4A7AZazVg7230pLE=
 github.com/hashicorp/terraform-registry-address v0.2.5 h1:2GTftHqmUhVOeuu9CW3kwDkRe4pcBDq0uuK5VJngU1M=
 github.com/hashicorp/terraform-registry-address v0.2.5/go.mod h1:PpzXWINwB5kuVS5CA7m1+eO2f1jKb5ZDIxrOPfpnGkg=
 github.com/hashicorp/terraform-svchost v0.1.1 h1:EZZimZ1GxdqFRinZ1tpJwVxxt49xc/S52uzrw4x0jKQ=
