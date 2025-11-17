@@ -2,7 +2,7 @@ module tools
 
 go 1.23.7
 
-toolchain go1.25.3
+toolchain go1.25.4
 
 require (
 	github.com/hashicorp/copywrite v0.22.0
