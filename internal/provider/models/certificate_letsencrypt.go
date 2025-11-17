@@ -5,6 +5,7 @@ package models
 
 import (
 	"context"
+
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -19,8 +20,6 @@ type CertificateLetsencrypt struct {
 	OwnerUserId types.Int64  `tfsdk:"owner_user_id"`
 
 	DomainNames            types.Set    `tfsdk:"domain_names"`
-	LetsencryptEmail       types.String `tfsdk:"letsencrypt_email"`
-	LetsencryptAgree       types.Bool   `tfsdk:"letsencrypt_agree"`
 	DnsChallenge           types.Bool   `tfsdk:"dns_challenge"`
 	DnsProvider            types.String `tfsdk:"dns_provider"`
 	DnsProviderCredentials types.String `tfsdk:"dns_provider_credentials"`
@@ -35,8 +34,6 @@ func (CertificateLetsencrypt) GetType() attr.Type {
 		"expires_on":               types.StringType,
 		"owner_user_id":            types.Int64Type,
 		"domain_names":             types.SetType{ElemType: types.StringType},
-		"letsencrypt_email":        types.StringType,
-		"letsencrypt_agree":        types.BoolType,
 		"dns_challenge":            types.BoolType,
 		"dns_provider":             types.StringType,
 		"dns_provider_credentials": types.StringType,
@@ -54,16 +51,6 @@ func (m *CertificateLetsencrypt) Write(ctx context.Context, certificate *nginxpr
 	m.OwnerUserId = types.Int64Value(certificate.GetOwnerUserId())
 
 	meta := certificate.GetMeta()
-	if meta.HasLetsencryptAgree() {
-		m.LetsencryptAgree = types.BoolValue(meta.GetLetsencryptAgree())
-	} else {
-		m.LetsencryptAgree = types.BoolNull()
-	}
-	if meta.HasLetsencryptEmail() {
-		m.LetsencryptEmail = types.StringValue(meta.GetLetsencryptEmail())
-	} else {
-		m.LetsencryptEmail = types.StringNull()
-	}
 	if meta.HasDnsChallenge() {
 		m.DnsChallenge = types.BoolValue(meta.GetDnsChallenge())
 	} else {
@@ -94,8 +81,6 @@ func (m *CertificateLetsencrypt) ToCreateRequest(ctx context.Context, diags *dia
 	diags.Append(tmpDiags...)
 
 	meta := *nginxproxymanager.NewGetCertificates200ResponseInnerMeta()
-	meta.SetLetsencryptEmail(m.LetsencryptEmail.ValueString())
-	meta.SetLetsencryptAgree(m.LetsencryptAgree.ValueBool())
 	meta.SetDnsChallenge(m.DnsChallenge.ValueBool())
 	if m.DnsChallenge.ValueBool() {
 		meta.SetDnsProvider(m.DnsProvider.ValueString())

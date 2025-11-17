@@ -6,7 +6,9 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-framework-validators/boolvalidator"
+	"strconv"
+	"sync"
+
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -16,12 +18,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/sander0542/nginxproxymanager-go"
 	"github.com/sander0542/terraform-provider-nginxproxymanager/internal/provider/models"
-	"strconv"
-	"sync"
 )
 
 var _ resource.Resource = &CertificateLetsencryptResource{}
@@ -80,23 +79,6 @@ func (r *CertificateLetsencryptResource) Schema(ctx context.Context, req resourc
 				ElementType:         types.StringType,
 				PlanModifiers: []planmodifier.Set{
 					setplanmodifier.RequiresReplace(),
-				},
-			},
-			"letsencrypt_email": schema.StringAttribute{
-				MarkdownDescription: "The email address to use for the Let's Encrypt certificate.",
-				Required:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
-			},
-			"letsencrypt_agree": schema.BoolAttribute{
-				MarkdownDescription: "Whether you agree to the [Let's Encrypt Terms of Service](https://letsencrypt.org/repository/).",
-				Required:            true,
-				Validators: []validator.Bool{
-					boolvalidator.Equals(true),
-				},
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
 				},
 			},
 			"dns_challenge": schema.BoolAttribute{
