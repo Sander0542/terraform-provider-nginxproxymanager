@@ -70,6 +70,9 @@ jobs:
     services:
       nginxproxymanager:
         image: docker.io/jc21/nginx-proxy-manager:latest
+        env:
+          INITIAL_ADMIN_EMAIL: 'admin@example.com'
+          INITIAL_ADMIN_PASSWORD: 'changeme'
         ports:
           - 80:80
           - 81:81
@@ -100,8 +103,8 @@ jobs:
       - name: Run Acceptance Tests
         run: go test -v -cover ./internal/provider/
         env:
-          NGINXPROXYMANAGER_URL: "http://localhost:81"
-          NGINXPROXYMANAGER_USERNAME: "admin@example.com"
-          NGINXPROXYMANAGER_PASSWORD: "changeme"
-          TF_ACC: "1"
+          NGINXPROXYMANAGER_URL: 'http://localhost:81'
+          NGINXPROXYMANAGER_USERNAME: 'admin@example.com'
+          NGINXPROXYMANAGER_PASSWORD: 'changeme'
+          TF_ACC: '1'
         timeout-minutes: 10
