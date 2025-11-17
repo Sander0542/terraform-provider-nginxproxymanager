@@ -10,7 +10,7 @@ require (
 	github.com/hashicorp/terraform-plugin-go v0.29.0
 	github.com/hashicorp/terraform-plugin-log v0.10.0
 	github.com/hashicorp/terraform-plugin-testing v1.13.3
-	github.com/sander0542/nginxproxymanager-go v0.0.0-20250222131153-1ef4b0cdf206
+	github.com/sander0542/nginxproxymanager-go v1.1.0
 )
 
 require (
