@@ -1,8 +1,6 @@
 module github.com/sander0542/terraform-provider-nginxproxymanager
 
-go 1.24.0
-
-toolchain go1.25.4
+go 1.25.4
 
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.16.1
