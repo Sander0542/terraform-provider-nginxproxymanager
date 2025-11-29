@@ -17,9 +17,6 @@ This resource can be used to manage a Let's Encrypt certificate.
 resource "nginxproxymanager_certificate_letsencrypt" "certificate" {
   domain_names = ["example.com", "*.example.com"]
 
-  letsencrypt_email = "admin@example.com"
-  letsencrypt_agree = true
-
   dns_challenge            = true
   dns_provider             = "cloudflare"
   dns_provider_credentials = "dns_cloudflare_api_token=0123456789abcdef0123456789abcdef01234567"
@@ -32,8 +29,6 @@ resource "nginxproxymanager_certificate_letsencrypt" "certificate" {
 ### Required
 
 - `domain_names` (Set of String) The domain names associated with the certificate.
-- `letsencrypt_agree` (Boolean) Whether you agree to the [Let's Encrypt Terms of Service](https://letsencrypt.org/repository/).
-- `letsencrypt_email` (String) The email address to use for the Let's Encrypt certificate.
 
 ### Optional
 
