@@ -74,15 +74,14 @@ func (m *CertificateLetsencrypt) Write(ctx context.Context, certificate *nginxpr
 	} else {
 		m.DnsProvider = types.StringNull()
 	}
+	// DnsProviderCredentials and PropagationSeconds are write-only: NPM never
+	// returns them in read responses. Preserve the existing state value so
+	// Terraform does not see an inconsistent result after apply.
 	if meta.HasDnsProviderCredentials() {
 		m.DnsProviderCredentials = types.StringValue(meta.GetDnsProviderCredentials())
-	} else {
-		m.DnsProviderCredentials = types.StringNull()
 	}
 	if meta.HasPropagationSeconds() {
 		m.PropagationSeconds = types.Int64Value(meta.GetPropagationSeconds())
-	} else {
-		m.PropagationSeconds = types.Int64Null()
 	}
 
 	m.DomainNames, tmpDiags = SetDomainNamesFrom(ctx, certificate.GetDomainNames())
