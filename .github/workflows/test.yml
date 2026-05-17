@@ -67,6 +67,7 @@ jobs:
           - '1.12.*'
           - '1.13.*'
           - '1.14.*'
+          - '1.15.*'
     services:
       nginxproxymanager:
         image: docker.io/jc21/nginx-proxy-manager:latest
