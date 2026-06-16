@@ -1,4 +1,4 @@
-// Copyright (c) Sander Jochems
+// Copyright Sander Jochems 2025, 2026, 0
 // SPDX-License-Identifier: MIT
 
 package provider
