@@ -46,7 +46,12 @@ func (AccessListAuthorizationResource) GetType() attr.Type {
 
 func (m *AccessListAuthorizationResource) Write(ctx context.Context, authorization *nginxproxymanager.GetAccessLists200ResponseInnerItemsInner, diags *diag.Diagnostics) {
 	m.Username = types.StringValue(authorization.GetUsername())
-	m.Password = types.StringUnknown()
+	// NPM never returns the password in read responses (only a hint). The caller
+	// (SetAccessListAuthorizationResourcesFrom) restores it from prior state when
+	// the username + hint match. Default to null instead of unknown so that fresh
+	// imports — where prior state has no authorizations to match against — do not
+	// leak an unknown value into the marshalled plan.
+	m.Password = types.StringNull()
 }
 
 func (m *AccessListAuthorizationResource) Read(ctx context.Context, diags *diag.Diagnostics) *nginxproxymanager.CreateAccessListRequestItemsInner {
