@@ -73,7 +73,8 @@ func (m *AccessListResource) ToCreateRequest(ctx context.Context, diags *diag.Di
 
 	request.SetSatisfyAny(m.SatisfyAny.ValueBool())
 	request.SetPassAuth(m.PassAuth.ValueBool())
-	request.SetMeta(map[string]interface{}{})
+	// NPM 2.13+ rejects a `meta` field on access-list create ("data must NOT
+	// have additional properties"). Do not send it. See upstream issue #291.
 
 	requestAuthorizations := make([]nginxproxymanager.CreateAccessListRequestItemsInner, 0, len(authorizations))
 	for _, authorization := range authorizations {
