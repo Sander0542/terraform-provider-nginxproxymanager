@@ -2,7 +2,7 @@ module github.com/sander0542/terraform-provider-nginxproxymanager
 
 go 1.25.8
 
-toolchain go1.26.4
+toolchain go1.26.5
 
 require (
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
@@ -53,7 +53,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/zclconf/go-cty v1.18.1 // indirect
-	golang.org/x/crypto v0.51.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/mod v0.35.0 // indirect
 	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
