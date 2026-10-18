@@ -5,11 +5,26 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
+
+func errorWithResponseBody(err error) string {
+	var responseError interface {
+		Body() []byte
+	}
+	if errors.As(err, &responseError) {
+		if body := strings.TrimSpace(string(responseError.Body())); body != "" {
+			return fmt.Sprintf("%s: %s", err, body)
+		}
+	}
+
+	return err.Error()
+}
 
 func resourceConfigure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) *NginxProxyManagerProviderData {
 	// Prevent panic if the provider has not been configured.

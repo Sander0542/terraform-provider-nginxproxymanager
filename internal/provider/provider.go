@@ -5,6 +5,7 @@ package provider
 
 import (
 	"context"
+	"net/http"
 	"net/url"
 	"os"
 	"sync"
@@ -146,6 +147,7 @@ func (p *NginxProxyManagerProvider) Configure(ctx context.Context, req provider.
 
 	config := nginxproxymanager.NewConfiguration()
 	config.Servers[0].URL = parsedUrl.String()
+	config.HTTPClient = &http.Client{Transport: proxyHostAccessListTransport{base: http.DefaultTransport}}
 	client := nginxproxymanager.NewAPIClient(config)
 
 	auth := context.Background()
