@@ -31,8 +31,7 @@ func (t proxyHostAccessListTransport) RoundTrip(request *http.Request) (*http.Re
 	body, err := io.ReadAll(response.Body)
 	response.Body.Close()
 	if err != nil {
-		response.Body = io.NopCloser(bytes.NewReader(body))
-		return response, nil
+		return nil, err
 	}
 
 	normalized, changed := normalizeProxyHostAccessListResponse(body)

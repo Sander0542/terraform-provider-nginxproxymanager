@@ -62,11 +62,45 @@ func (e testAPIError) Body() []byte {
 }
 
 func TestErrorWithResponseBody(t *testing.T) {
-	err := testAPIError{body: []byte(`{"error":"invalid forward host"}`)}
-	got := errorWithResponseBody(err)
-	want := `400 Bad Request: {"error":"invalid forward host"}`
-	if got != want {
-		t.Fatalf("errorWithResponseBody() = %q, want %q", got, want)
+	tests := []struct {
+		name string
+		body string
+		want string
+	}{
+		{
+			name: "string API error",
+			body: `{"error":"invalid forward host"}`,
+			want: "400 Bad Request: invalid forward host",
+		},
+		{
+			name: "nested API error",
+			body: `{"error":{"code":400,"message":"invalid forward host"}}`,
+			want: "400 Bad Request: invalid forward host",
+		},
+		{
+			name: "host payload does not leak secrets",
+			body: `{"advanced_config":"proxy_set_header Authorization secret;","access_list":{"items":[{"password":"secret"}]}}`,
+			want: "400 Bad Request",
+		},
+		{
+			name: "malformed JSON does not leak body",
+			body: `{"error":"invalid forward host",`,
+			want: "400 Bad Request",
+		},
+		{
+			name: "only API error message is exposed",
+			body: `{"error":"invalid forward host","secret":"sensitive"}`,
+			want: "400 Bad Request: invalid forward host",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			err := testAPIError{body: []byte(test.body)}
+			if got := errorWithResponseBody(err); got != test.want {
+				t.Fatalf("errorWithResponseBody() = %q, want %q", got, test.want)
+			}
+		})
 	}
 
 	ordinaryError := errors.New("connection refused")

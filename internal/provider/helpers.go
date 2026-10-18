@@ -5,6 +5,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -18,8 +19,20 @@ func errorWithResponseBody(err error) string {
 		Body() []byte
 	}
 	if errors.As(err, &responseError) {
-		if body := strings.TrimSpace(string(responseError.Body())); body != "" {
-			return fmt.Sprintf("%s: %s", err, body)
+		var response map[string]json.RawMessage
+		if json.Unmarshal(responseError.Body(), &response) == nil {
+			var apiError string
+			if json.Unmarshal(response["error"], &apiError) != nil {
+				var nestedError struct {
+					Message string `json:"message"`
+				}
+				if json.Unmarshal(response["error"], &nestedError) == nil {
+					apiError = nestedError.Message
+				}
+			}
+			if apiError = strings.TrimSpace(apiError); apiError != "" {
+				return fmt.Sprintf("%s: %s", err, apiError)
+			}
 		}
 	}
 
