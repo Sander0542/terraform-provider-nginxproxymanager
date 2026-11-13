@@ -224,7 +224,7 @@ func (r *ProxyHostResource) Create(ctx context.Context, req resource.CreateReque
 	request := data.ToCreateRequest(ctx, &resp.Diagnostics)
 	proxyHost, _, err := r.client.ProxyHostsAPI.CreateProxyHost(r.auth).CreateProxyHostRequest(*request).Execute()
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create proxy host, got error: %s", err))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to create proxy host, got error: %s", errorWithResponseBody(err)))
 		return
 	}
 
